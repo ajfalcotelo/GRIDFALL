@@ -5,13 +5,27 @@ using UnityEngine;
 public class Pathfinding
 {
     
-    private readonly Vector2Int[] directions =
+    private static readonly Vector2Int[] directions =
     {
-        new(0, 1),
-        new(0, -1),
-        new(1, 0),
-        new(-1, 0)
+        // 4way directions
+        // new(0, 1),
+        // new(0, -1),
+        // new(1, 0),
+        // new(-1, 0)
+
+        // 8way directions
+        new (0, 1),
+        new (-1, 0),
+        new (0, -1),
+        new (1, 0),
+        new (1, 1),
+        new (1, -1),
+        new (-1, -1),
+        new (-1, 1)
     };
+
+    private const int MOVE_STRAIGHT_COST = 10;
+    private const int MOVE_DIAGONAL_COST = 14;
 
     private readonly Grid grid;
 
@@ -25,6 +39,7 @@ public class Pathfinding
         return grid;
     }
 
+    // as of now, there are no exception handling for when clicking outside the tilemap bounds
     public List<PathNode> FindPath(Vector2Int start, Vector2Int target)
     {
         PathNode startNode = grid.GetNode(start.x, start.y);
@@ -41,10 +56,7 @@ public class Pathfinding
         {
             foreach (var node in openList)
             {
-                if (node.FCost < current.FCost || node.FCost == current.FCost && node.HCost < current.HCost)
-                {
-                    current = node;
-                }
+                if (node.FCost < current.FCost || node.FCost == current.FCost && node.HCost < current.HCost) current = node;
             }
 
             openList.Remove(current);
@@ -60,6 +72,7 @@ public class Pathfinding
                     path.Add(currentPathNode);
                     currentPathNode = currentPathNode.Parent;
                 }
+                path.Add(startNode); // for debug, not needed for implementation
                 path.Reverse();
                 return path;
             }
@@ -67,15 +80,15 @@ public class Pathfinding
             // Evaluate neighbor nodes
             foreach (var neighbor in GetNeighborList(current).Where(node => !closedList.Contains(node)))
             {
-                bool inOpenList = openList.Contains(neighbor);
-                int tentativeGCost = GetDistance(current, neighbor) + current.GCost;
+                if (closedList.Contains(neighbor)) continue;
 
-                if (!inOpenList || tentativeGCost < current.GCost)
+                int tentativeGCost = GetDistance(current, neighbor) + current.GCost;
+                if (tentativeGCost < current.GCost)
                 {
                     neighbor.SetGCost(tentativeGCost);
                     neighbor.SetParent(current);
 
-                    if (!inOpenList)
+                    if (!openList.Contains(neighbor))
                     {
                         neighbor.SetHCost(GetDistance(neighbor, targetNode));
                         openList.Add(neighbor);
@@ -101,7 +114,18 @@ public class Pathfinding
 
     private int GetDistance(PathNode a, PathNode b)
     {
-        return Mathf.Abs(a.X - b.X) + Mathf.Abs(a.Y - b.Y);
+        // 4d movement costs
+        // return Mathf.Abs(a.X - b.X) + Mathf.Abs(a.Y - b.Y);
+
+        // 8d movement costs
+        var dist = new Vector2Int(Mathf.Abs(a.X - b.X), Mathf.Abs(a.Y - b.Y));
+
+        var lowest = Mathf.Min(dist.x, dist.y);
+        var highest = Mathf.Max(dist.x, dist.y);
+
+        var horizontalMovesRequired = highest - lowest;
+
+        return lowest * MOVE_DIAGONAL_COST + horizontalMovesRequired * MOVE_STRAIGHT_COST ;
     }
 
 }
