@@ -4,59 +4,25 @@ using UnityEngine;
 
 public class Pathfinding
 {
-    
-    private static readonly Vector2Int[] directions =
-    {
-        // 4way directions
-        // new(0, 1),
-        // new(0, -1),
-        // new(1, 0),
-        // new(-1, 0)
-
-        // 8way directions
-        new (0, 1),
-        new (-1, 0),
-        new (0, -1),
-        new (1, 0),
-        new (1, 1),
-        new (1, -1),
-        new (-1, -1),
-        new (-1, 1)
-    };
-
-    private const int MOVE_STRAIGHT_COST = 10;
-    private const int MOVE_DIAGONAL_COST = 14;
-
-    private readonly Grid grid;
-
-    public Pathfinding(int width, int height, Vector3 originPosition)
-    {
-        grid = new(width, height, 1f, originPosition);
-    }
-
-    public Grid GetGrid()
-    {
-        return grid;
-    }
-
     // as of now, there are no exception handling for when clicking outside the tilemap bounds
-    public List<PathNode> FindPath(Vector2Int start, Vector2Int target)
+    public static List<PathNode> FindPath(Vector2Int start, Vector2Int target)
     {
-        PathNode startNode = grid.GetNode(start.x, start.y);
-        PathNode targetNode = grid.GetNode(target.x, target.y);
+        PathNode startNode = GridManager.Instance.GetNode(start);
+        PathNode targetNode = GridManager.Instance.GetNode(target);
 
-        var openList = new List<PathNode> {startNode};
+        var openList = new List<PathNode> { startNode };
         var closedList = new List<PathNode>();
-
-        var current = openList[0];
-        current.SetGCost(0);
-        current.SetHCost(GetDistance(startNode, targetNode));
 
         while (openList.Any())
         {
+            var current = openList[0];
             foreach (var node in openList)
             {
-                if (node.FCost < current.FCost || node.FCost == current.FCost && node.HCost < current.HCost) current = node;
+                if (
+                    node.FCost < current.FCost
+                    || node.FCost == current.FCost && node.HCost < current.HCost
+                )
+                    current = node;
             }
 
             openList.Remove(current);
@@ -78,19 +44,23 @@ public class Pathfinding
             }
 
             // Evaluate neighbor nodes
-            foreach (var neighbor in GetNeighborList(current).Where(node => !closedList.Contains(node)))
+            foreach (
+                PathNode neighbor in current.Neighbors.Where(node =>
+                    node.IsWalkable && !closedList.Contains(node)
+                )
+            )
             {
-                if (closedList.Contains(neighbor)) continue;
+                var inSearch = openList.Contains(neighbor);
 
-                int tentativeGCost = GetDistance(current, neighbor) + current.GCost;
-                if (tentativeGCost < current.GCost)
+                int tentativeGCost = current.GetDistance(neighbor) + current.GCost;
+                if (!inSearch || tentativeGCost < neighbor.GCost)
                 {
                     neighbor.SetGCost(tentativeGCost);
-                    neighbor.SetParent(current);
+                    neighbor.Parent = current;
 
-                    if (!openList.Contains(neighbor))
+                    if (!inSearch)
                     {
-                        neighbor.SetHCost(GetDistance(neighbor, targetNode));
+                        neighbor.SetHCost(neighbor.GetDistance(targetNode));
                         openList.Add(neighbor);
                     }
                 }
@@ -99,33 +69,4 @@ public class Pathfinding
 
         return null;
     }
-
-    private List<PathNode> GetNeighborList(PathNode current)
-    {
-        var neighborList = new List<PathNode>();
-
-        foreach (var dir in directions.Select(dir => grid.GetNode(current.X + dir.x, current.Y + dir.y)).Where(node => node != null))
-        {
-            neighborList.Add(dir);
-        }
-
-        return neighborList;
-    }
-
-    private int GetDistance(PathNode a, PathNode b)
-    {
-        // 4d movement costs
-        // return Mathf.Abs(a.X - b.X) + Mathf.Abs(a.Y - b.Y);
-
-        // 8d movement costs
-        var dist = new Vector2Int(Mathf.Abs(a.X - b.X), Mathf.Abs(a.Y - b.Y));
-
-        var lowest = Mathf.Min(dist.x, dist.y);
-        var highest = Mathf.Max(dist.x, dist.y);
-
-        var horizontalMovesRequired = highest - lowest;
-
-        return lowest * MOVE_DIAGONAL_COST + horizontalMovesRequired * MOVE_STRAIGHT_COST ;
-    }
-
 }
