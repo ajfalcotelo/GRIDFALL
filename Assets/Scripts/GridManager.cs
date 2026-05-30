@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
 public class GridManager : MonoBehaviour
@@ -9,7 +8,6 @@ public class GridManager : MonoBehaviour
     public static GridManager Instance { get; private set; }
     public Dictionary<Vector2Int, PathNode> Nodes { get; private set; }
 
-    private PlayerInputActions inputActions;
     private readonly NodeGrid nodeGrid = new();
 
     [SerializeField]
@@ -18,22 +16,11 @@ public class GridManager : MonoBehaviour
     [SerializeField]
     private Tilemap obstacleTilemap;
 
+    public Tilemap GetGroundTilemap => groundTilemap;
+
     void Awake()
     {
         Instance = this;
-        inputActions = new PlayerInputActions();
-    }
-
-    void OnEnable()
-    {
-        inputActions.Player.Click.Enable();
-        inputActions.Player.Click.performed += OnClick;
-    }
-
-    void OnDisable()
-    {
-        inputActions.Player.Click.performed -= OnClick;
-        inputActions.Player.Click.Disable();
     }
 
     void Start()
@@ -49,24 +36,26 @@ public class GridManager : MonoBehaviour
         {
             if (obstacleTilemap.HasTile(obstaclePos))
             {
-                WorldToXY(obstaclePos, out int x, out int y);
-                GetNode(new Vector2Int(x, y)).IsWalkable = false;
+                Vector2Int pos = WorldToXY(obstaclePos);
+                GetNode(pos).IsWalkable = false;
             }
         }
 
-        ShowDebug(true);
+        ShowGridDebug(true);
     }
 
     public PathNode GetNode(Vector2Int position) =>
         Nodes.TryGetValue(position, out PathNode pathNode) ? pathNode : null;
 
-    public void WorldToXY(Vector3 worldPosition, out int x, out int y)
+    public Vector2Int WorldToXY(Vector3 worldPosition)
     {
-        x = Mathf.FloorToInt((worldPosition - groundTilemap.cellBounds.min).x);
-        y = Mathf.FloorToInt((worldPosition - groundTilemap.cellBounds.min).y);
+        int x = Mathf.FloorToInt((worldPosition - groundTilemap.cellBounds.min).x);
+        int y = Mathf.FloorToInt((worldPosition - groundTilemap.cellBounds.min).y);
+
+        return new Vector2Int(x, y);
     }
 
-    private void ShowDebug(bool show)
+    private void ShowGridDebug(bool show)
     {
         int width = groundTilemap.cellBounds.size.x;
         int height = groundTilemap.cellBounds.size.y;
@@ -96,31 +85,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    void OnClick(InputAction.CallbackContext callbackContext)
-    {
-        var mousePosition = Mouse.current.position.ReadValue();
-        var mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-        WorldToXY(mouseWorldPosition, out int x, out int y);
-        List<PathNode> path = Pathfinding.FindPath(Vector2Int.zero, new Vector2Int(x, y));
-        if (path != null)
-        {
-            for (int i = 0; i < path.Count - 1; i++)
-            {
-                Vector3 start =
-                    new Vector3(path[i].Position.x, path[i].Position.y, 0)
-                    + groundTilemap.cellBounds.min
-                    + Vector3.one * 0.5f;
-                Vector3 end =
-                    new Vector3(path[i + 1].Position.x, path[i + 1].Position.y, 0)
-                    + groundTilemap.cellBounds.min
-                    + Vector3.one * 0.5f;
-
-                Debug.DrawLine(start, end, Color.green, 3f);
-            }
-        }
-    }
-
-    private Vector2 XYToWorldPos(int x, int y)
+    public Vector2 XYToWorldPos(int x, int y)
     {
         return new Vector2(x, y)
             + new Vector2(groundTilemap.cellBounds.min.x, groundTilemap.cellBounds.min.y);
