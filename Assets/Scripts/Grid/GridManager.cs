@@ -41,7 +41,7 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        ShowGridDebug(true);
+        ShowGridDebug(false);
     }
 
     public PathNode GetNode(Vector2Int position) =>

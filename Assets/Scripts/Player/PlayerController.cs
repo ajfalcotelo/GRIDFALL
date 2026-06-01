@@ -4,8 +4,17 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
+public enum PlayerActionMode
+{
+    None,
+    Move,
+    Attack,
+}
+
 public class PlayerController : MonoBehaviour
 {
+    public event System.Action OnActionFinished;
+
     [SerializeField]
     private Tile clickTile;
 
@@ -22,7 +31,7 @@ public class PlayerController : MonoBehaviour
     private GridManager gridManager;
 
     [SerializeField]
-    private float moveSpeed = 5f;
+    private float moveSpeed = 1f;
 
     private PlayerInputActions playerInputActions;
     private Vector3Int prevHoverPosition;
@@ -37,8 +46,6 @@ public class PlayerController : MonoBehaviour
 
     void OnEnable()
     {
-        playerInputActions.Player.Click.Enable();
-        playerInputActions.Player.Hover.Enable();
         playerInputActions.Player.Click.performed += OnClickMove;
         playerInputActions.Player.Hover.performed += OnHover;
     }
@@ -47,8 +54,6 @@ public class PlayerController : MonoBehaviour
     {
         playerInputActions.Player.Click.performed -= OnClickMove;
         playerInputActions.Player.Hover.performed -= OnHover;
-        playerInputActions.Player.Click.Disable();
-        playerInputActions.Player.Hover.Disable();
     }
 
     void Start()
@@ -58,35 +63,22 @@ public class PlayerController : MonoBehaviour
         );
     }
 
-    private IEnumerator FollowPath()
+    public void SetActionMode(PlayerActionMode action)
     {
-        foreach (PathNode path in paths)
-        {
-            while (
-                Vector2.Distance(
-                    transform.position,
-                    gridManager.XYToWorldPos(path.Position.x, path.Position.y) + Vector2.one * 0.5f
-                ) > 0.05f
-            )
-            {
-                transform.position = Vector2.MoveTowards(
-                    transform.position,
-                    gridManager.XYToWorldPos(path.Position.x, path.Position.y) + Vector2.one * 0.5f,
-                    moveSpeed * Time.deltaTime
-                );
+        playerInputActions.Player.Click.Disable();
+        playerInputActions.Player.Hover.Disable();
 
-                yield return null;
-            }
+        switch (action)
+        {
+            case PlayerActionMode.Move:
+                playerInputActions.Player.Hover.Enable();
+                playerInputActions.Player.Click.Enable();
+                break;
+            case PlayerActionMode.Attack:
+            case PlayerActionMode.None:
+                playerInputActions.Player.Disable();
+                break;
         }
-        Vector2 targetTilePos = gridManager.XYToWorldPos(
-            paths[^1].Position.x,
-            paths[^1].Position.y
-        );
-        clickTilemap.SetTile(
-            clickTilemap.WorldToCell(new Vector3(targetTilePos.x, targetTilePos.y)),
-            null
-        );
-        isMoving = false;
     }
 
     private void OnClickMove(InputAction.CallbackContext context)
@@ -107,6 +99,7 @@ public class PlayerController : MonoBehaviour
         Vector2Int mouseXYPos = gridManager.WorldToXY(mouseWorldPosition);
         Vector2Int playerXYPos = gridManager.WorldToXY(transform.position);
         List<PathNode> path = Pathfinding.FindPath(playerXYPos, mouseXYPos);
+
         if (path != null)
         {
             for (int i = 0; i < path.Count - 1; i++)
@@ -140,5 +133,38 @@ public class PlayerController : MonoBehaviour
             hoverTilemap.SetTile(cellPosition, hoverTile);
             prevHoverPosition = cellPosition;
         }
+    }
+
+    private IEnumerator FollowPath()
+    {
+        foreach (PathNode path in paths)
+        {
+            while (
+                Vector2.Distance(
+                    transform.position,
+                    gridManager.XYToWorldPos(path.Position.x, path.Position.y) + Vector2.one * 0.5f
+                ) > 0.05f
+            )
+            {
+                transform.position = Vector2.MoveTowards(
+                    transform.position,
+                    gridManager.XYToWorldPos(path.Position.x, path.Position.y) + Vector2.one * 0.5f,
+                    moveSpeed * Time.deltaTime
+                );
+
+                yield return null;
+            }
+        }
+        Vector2 targetTilePos = gridManager.XYToWorldPos(
+            paths[^1].Position.x,
+            paths[^1].Position.y
+        );
+        clickTilemap.SetTile(
+            clickTilemap.WorldToCell(new Vector3(targetTilePos.x, targetTilePos.y)),
+            null
+        );
+        isMoving = false;
+        hoverTilemap.ClearAllTiles();
+        OnActionFinished?.Invoke();
     }
 }
