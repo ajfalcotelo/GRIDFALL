@@ -36,16 +36,18 @@ public class GridManager : MonoBehaviour
         {
             if (obstacleTilemap.HasTile(obstaclePos))
             {
-                Vector2Int pos = WorldToXY(obstaclePos);
-                GetNode(pos).IsWalkable = false;
+                GetNode(obstaclePos).IsWalkable = false;
             }
         }
 
         ShowGridDebug(false);
     }
 
-    public PathNode GetNode(Vector2Int position) =>
-        Nodes.TryGetValue(position, out PathNode pathNode) ? pathNode : null;
+    public PathNode GetNode(Vector2Int cellposition) =>
+        Nodes.TryGetValue(cellposition, out PathNode pathNode) ? pathNode : null;
+
+    public PathNode GetNode(Vector3 worldposition) =>
+        Nodes.TryGetValue(WorldToXY(worldposition), out PathNode pathNode) ? pathNode : null;
 
     public Vector2Int WorldToXY(Vector3 worldPosition)
     {

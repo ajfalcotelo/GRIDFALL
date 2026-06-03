@@ -28,9 +28,6 @@ public class PlayerController : MonoBehaviour
     private Tilemap clickTilemap;
 
     [SerializeField]
-    private GridManager gridManager;
-
-    [SerializeField]
     private float moveSpeed = 1f;
 
     private PlayerInputActions playerInputActions;
@@ -46,19 +43,19 @@ public class PlayerController : MonoBehaviour
 
     void OnEnable()
     {
-        playerInputActions.Player.Click.performed += OnClickMove;
+        playerInputActions.Player.Click.performed += OnMove;
         playerInputActions.Player.Hover.performed += OnHover;
     }
 
     void OnDisable()
     {
-        playerInputActions.Player.Click.performed -= OnClickMove;
+        playerInputActions.Player.Click.performed -= OnMove;
         playerInputActions.Player.Hover.performed -= OnHover;
     }
 
     void Start()
     {
-        transform.position = gridManager.GetGroundTilemap.GetCellCenterWorld(
+        transform.position = GridManager.Instance.GetGroundTilemap.GetCellCenterWorld(
             Vector3Int.RoundToInt(transform.position)
         );
     }
@@ -81,7 +78,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnClickMove(InputAction.CallbackContext context)
+    private void OnMove(InputAction.CallbackContext context)
     {
         Vector2 mousePosition = Mouse.current.position.ReadValue();
         Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
@@ -96,8 +93,8 @@ public class PlayerController : MonoBehaviour
         clickTilemap.SetTile(cellPosition, clickTile);
         prevClickPosition = cellPosition;
 
-        Vector2Int mouseXYPos = gridManager.WorldToXY(mouseWorldPosition);
-        Vector2Int playerXYPos = gridManager.WorldToXY(transform.position);
+        Vector2Int mouseXYPos = GridManager.Instance.WorldToXY(mouseWorldPosition);
+        Vector2Int playerXYPos = GridManager.Instance.WorldToXY(transform.position);
         List<PathNode> path = Pathfinding.FindPath(playerXYPos, mouseXYPos);
 
         if (path != null)
@@ -106,11 +103,11 @@ public class PlayerController : MonoBehaviour
             {
                 Vector3 start =
                     new Vector3(path[i].Position.x, path[i].Position.y, 0)
-                    + gridManager.GetGroundTilemap.cellBounds.min
+                    + GridManager.Instance.GetGroundTilemap.cellBounds.min
                     + Vector3.one * 0.5f;
                 Vector3 end =
                     new Vector3(path[i + 1].Position.x, path[i + 1].Position.y, 0)
-                    + gridManager.GetGroundTilemap.cellBounds.min
+                    + GridManager.Instance.GetGroundTilemap.cellBounds.min
                     + Vector3.one * 0.5f;
 
                 Debug.DrawLine(start, end, Color.green, 3f);
@@ -135,6 +132,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnAttack() { }
+
     private IEnumerator FollowPath()
     {
         foreach (PathNode path in paths)
@@ -142,20 +141,22 @@ public class PlayerController : MonoBehaviour
             while (
                 Vector2.Distance(
                     transform.position,
-                    gridManager.XYToWorldPos(path.Position.x, path.Position.y) + Vector2.one * 0.5f
+                    GridManager.Instance.XYToWorldPos(path.Position.x, path.Position.y)
+                        + Vector2.one * 0.5f
                 ) > 0.05f
             )
             {
                 transform.position = Vector2.MoveTowards(
                     transform.position,
-                    gridManager.XYToWorldPos(path.Position.x, path.Position.y) + Vector2.one * 0.5f,
+                    GridManager.Instance.XYToWorldPos(path.Position.x, path.Position.y)
+                        + Vector2.one * 0.5f,
                     moveSpeed * Time.deltaTime
                 );
 
                 yield return null;
             }
         }
-        Vector2 targetTilePos = gridManager.XYToWorldPos(
+        Vector2 targetTilePos = GridManager.Instance.XYToWorldPos(
             paths[^1].Position.x,
             paths[^1].Position.y
         );
