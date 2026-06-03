@@ -39,6 +39,8 @@ public class Pathfinding
                     currentPathNode = currentPathNode.Parent;
                 }
                 path.Add(startNode); // for debug, not needed for implementation
+                if (targetNode.Occupant)
+                    path.RemoveAt(0);
                 path.Reverse();
                 return path;
             }

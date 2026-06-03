@@ -22,19 +22,13 @@ public class PlayerController : MonoBehaviour
     private Tile hoverTile;
 
     [SerializeField]
-    private Tilemap hoverTilemap;
-
-    [SerializeField]
-    private Tilemap clickTilemap;
-
-    [SerializeField]
     private float moveSpeed = 1f;
 
+    private Tilemap hoverTilemap;
+    private Tilemap clickTilemap;
     private PlayerInputActions playerInputActions;
     private Vector3Int prevHoverPosition;
-    private Vector3Int prevClickPosition;
     private List<PathNode> paths;
-    private bool isMoving = false;
 
     void Awake()
     {
@@ -55,6 +49,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        hoverTilemap = GameObject.FindGameObjectWithTag("HoverTilemap").GetComponent<Tilemap>();
+        clickTilemap = GameObject.FindGameObjectWithTag("ClickTilemap").GetComponent<Tilemap>();
         transform.position = GridManager.Instance.GetGroundTilemap.GetCellCenterWorld(
             Vector3Int.RoundToInt(transform.position)
         );
@@ -83,15 +79,7 @@ public class PlayerController : MonoBehaviour
         Vector2 mousePosition = Mouse.current.position.ReadValue();
         Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
         Vector3Int cellPosition = clickTilemap.WorldToCell(mouseWorldPosition);
-
-        if (isMoving && prevClickPosition != cellPosition)
-        {
-            clickTilemap.SetTile(prevClickPosition, null);
-        }
-
-        isMoving = true;
         clickTilemap.SetTile(cellPosition, clickTile);
-        prevClickPosition = cellPosition;
 
         Vector2Int mouseXYPos = GridManager.Instance.WorldToXY(mouseWorldPosition);
         Vector2Int playerXYPos = GridManager.Instance.WorldToXY(transform.position);
@@ -132,8 +120,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnAttack() { }
-
     private IEnumerator FollowPath()
     {
         foreach (PathNode path in paths)
@@ -164,7 +150,7 @@ public class PlayerController : MonoBehaviour
             clickTilemap.WorldToCell(new Vector3(targetTilePos.x, targetTilePos.y)),
             null
         );
-        isMoving = false;
+        clickTilemap.ClearAllTiles();
         hoverTilemap.ClearAllTiles();
         OnActionFinished?.Invoke();
     }
