@@ -16,7 +16,15 @@ public class GridManager : MonoBehaviour
     [SerializeField]
     private Tilemap obstacleTilemap;
 
+    [SerializeField]
+    private Tilemap highlightTilemap;
+
+    [SerializeField]
+    private RuleTile highlightRuleTile;
+
     public Tilemap GetGroundTilemap => groundTilemap;
+    public Tilemap GetHighlightTilemap => highlightTilemap;
+    public RuleTile GetHighlightRuleTile => highlightRuleTile;
 
     void Awake()
     {
@@ -37,7 +45,7 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        ShowGridDebug(false);
+        ShowGridDebug(true);
     }
 
     public PathNode GetNode(Vector2Int cellposition) =>
@@ -71,7 +79,7 @@ public class GridManager : MonoBehaviour
                     transform.localPosition = XYToWorldPos(x, y) + Vector2.one * 0.5f;
                     TextMeshPro textMesh = gameObject.GetComponent<TextMeshPro>();
                     textMesh.alignment = TextAlignmentOptions.Center;
-                    textMesh.text = GetNode(new Vector2Int(x, y)).IsWalkable ? null : "X";
+                    textMesh.text = $"{GetNode(new Vector2Int(x, y)).Position}";
                     textMesh.fontSize = 4;
                     textMesh.color = Color.white;
 

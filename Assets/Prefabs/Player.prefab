@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8737702489353001004}
   - component: {fileID: 6497612039325983390}
   - component: {fileID: 4110911750708212865}
-  - component: {fileID: 5790458869345273966}
   - component: {fileID: 5162445019194573101}
   m_Layer: 0
   m_Name: Player
@@ -140,23 +139,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.9375, y: 0.22955573}
   m_EdgeRadius: 0
---- !u!114 &5790458869345273966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6581163534703986445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7979d00bfb38f234eba9a46cfa32a5ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  clickTile: {fileID: 11400000, guid: 235ca205fc7944b4fa7e7c3bd9bcab2b, type: 2}
-  hoverTile: {fileID: 11400000, guid: c00be674b20cbef4b929fada124d4e75, type: 2}
-  hoverTilemap: {fileID: 0}
-  clickTilemap: {fileID: 0}
-  moveSpeed: 5
 --- !u!114 &5162445019194573101
 MonoBehaviour:
   m_ObjectHideFlags: 0
