@@ -13,7 +13,7 @@ public enum PlayerActionMode
 
 public class PlayerController : MonoBehaviour
 {
-    public event System.Action OnActionFinished;
+    public event System.Action OnActionFinished = delegate { };
 
     [SerializeField]
     private Tile clickTile;
@@ -30,28 +30,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float moveSpeed = 1f;
 
-    private PlayerInputActions playerInputActions;
+    [SerializeField]
+    private InputController input;
+
     private Vector3Int prevHoverPosition;
     private Vector3Int prevClickPosition;
     private List<PathNode> paths;
     private bool isMoving = false;
-
-    void Awake()
-    {
-        playerInputActions = new PlayerInputActions();
-    }
-
-    void OnEnable()
-    {
-        playerInputActions.Player.Click.performed += OnMove;
-        playerInputActions.Player.Hover.performed += OnHover;
-    }
-
-    void OnDisable()
-    {
-        playerInputActions.Player.Click.performed -= OnMove;
-        playerInputActions.Player.Hover.performed -= OnHover;
-    }
 
     void Start()
     {
@@ -60,27 +45,34 @@ public class PlayerController : MonoBehaviour
         );
     }
 
+    void OnEnable()
+    {
+        input.Click += OnClick;
+        input.Hover += OnHover;
+    }
+
+    void OnDisable()
+    {
+        input.Click -= OnClick;
+        input.Hover -= OnHover;
+    }
+
     public void SetActionMode(PlayerActionMode action)
     {
-        playerInputActions.Player.Click.Disable();
-        playerInputActions.Player.Hover.Disable();
-
         switch (action)
         {
             case PlayerActionMode.Move:
-                playerInputActions.Player.Hover.Enable();
-                playerInputActions.Player.Click.Enable();
+                input.EnablePlayerInputActions();
                 break;
             case PlayerActionMode.Attack:
             case PlayerActionMode.None:
-                playerInputActions.Player.Disable();
+                input.DisablePlayerInputActions();
                 break;
         }
     }
 
-    private void OnMove(InputAction.CallbackContext context)
+    private void OnClick(Vector2 mousePosition)
     {
-        Vector2 mousePosition = Mouse.current.position.ReadValue();
         Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
         Vector3Int cellPosition = clickTilemap.WorldToCell(mouseWorldPosition);
 
@@ -96,31 +88,30 @@ public class PlayerController : MonoBehaviour
         Vector2Int mouseXYPos = GridManager.Instance.WorldToXY(mouseWorldPosition);
         Vector2Int playerXYPos = GridManager.Instance.WorldToXY(transform.position);
         List<PathNode> path = Pathfinding.FindPath(playerXYPos, mouseXYPos);
+        if (path == null)
+            return;
 
-        if (path != null)
+        for (int i = 0; i < path.Count - 1; i++)
         {
-            for (int i = 0; i < path.Count - 1; i++)
-            {
-                Vector3 start =
-                    new Vector3(path[i].Position.x, path[i].Position.y, 0)
-                    + GridManager.Instance.GetGroundTilemap.cellBounds.min
-                    + Vector3.one * 0.5f;
-                Vector3 end =
-                    new Vector3(path[i + 1].Position.x, path[i + 1].Position.y, 0)
-                    + GridManager.Instance.GetGroundTilemap.cellBounds.min
-                    + Vector3.one * 0.5f;
+            Vector3 start =
+                new Vector3(path[i].Position.x, path[i].Position.y, 0)
+                + GridManager.Instance.GetGroundTilemap.cellBounds.min
+                + Vector3.one * 0.5f;
+            Vector3 end =
+                new Vector3(path[i + 1].Position.x, path[i + 1].Position.y, 0)
+                + GridManager.Instance.GetGroundTilemap.cellBounds.min
+                + Vector3.one * 0.5f;
 
-                Debug.DrawLine(start, end, Color.green, 3f);
-            }
-
-            paths = path;
-            StartCoroutine(FollowPath());
+            Debug.DrawLine(start, end, Color.green, 3f);
         }
+
+        paths = path;
+        StartCoroutine(FollowPath());
+        OnActionFinished.Invoke();
     }
 
-    private void OnHover(InputAction.CallbackContext context)
+    private void OnHover(Vector2 mousePosition)
     {
-        Vector2 mousePosition = context.ReadValue<Vector2>();
         Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
         Vector3Int cellPosition = hoverTilemap.WorldToCell(mouseWorldPosition);
 
@@ -131,8 +122,6 @@ public class PlayerController : MonoBehaviour
             prevHoverPosition = cellPosition;
         }
     }
-
-    private void OnAttack() { }
 
     private IEnumerator FollowPath()
     {
@@ -166,6 +155,5 @@ public class PlayerController : MonoBehaviour
         );
         isMoving = false;
         hoverTilemap.ClearAllTiles();
-        OnActionFinished?.Invoke();
     }
 }

@@ -1,0 +1,36 @@
+using System;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class InputController : MonoBehaviour
+{
+    public event Action<Vector2> Click = delegate { };
+    public event Action<Vector2> Hover = delegate { };
+
+    private PlayerInputActions inputActions;
+
+    void Awake()
+    {
+        inputActions = new();
+    }
+
+    public void EnablePlayerInputActions()
+    {
+        inputActions.Player.Enable();
+        inputActions.Player.Click.performed += OnClick;
+        inputActions.Player.Hover.performed += OnHover;
+    }
+
+    public void DisablePlayerInputActions()
+    {
+        inputActions.Player.Click.performed -= OnClick;
+        inputActions.Player.Hover.performed -= OnHover;
+        inputActions.Player.Disable();
+    }
+
+    private void OnClick(InputAction.CallbackContext context) =>
+        Click.Invoke(Mouse.current.position.ReadValue());
+
+    private void OnHover(InputAction.CallbackContext context) =>
+        Hover.Invoke(context.ReadValue<Vector2>());
+}
