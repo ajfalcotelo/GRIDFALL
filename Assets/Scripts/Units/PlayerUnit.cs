@@ -8,7 +8,8 @@ public class PlayerUnit : MonoBehaviour, IUnit
     public int Speed => currentSpeed;
     public int Range => currentRange;
 
-    public Vector2 UnitGridPosition => GridManager.Instance.WorldToXY(transform.position);
+    public Vector2Int GridPosition => GridManager.Instance.WorldToXY(transform.position);
+    public GameObject GameObject => gameObject;
 
     [SerializeField]
     private UnitData unitData;
@@ -26,5 +27,10 @@ public class PlayerUnit : MonoBehaviour, IUnit
         currentDefense = unitData.Defense;
         currentSpeed = unitData.Speed;
         currentRange = unitData.Range;
+    }
+
+    void Start()
+    {
+        GridManager.Instance.GetNode(transform.position).Occupant = this;
     }
 }

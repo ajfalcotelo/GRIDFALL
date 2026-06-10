@@ -8,5 +8,6 @@ public interface IUnit
     int Speed { get; }
     int Range { get; }
 
-    Vector2 UnitGridPosition { get; }
+    Vector2Int GridPosition { get; }
+    GameObject GameObject { get; }
 }

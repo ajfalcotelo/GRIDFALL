@@ -21,10 +21,7 @@ public class GridManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-    }
 
-    void Start()
-    {
         BoundsInt cellBounds = groundTilemap.cellBounds;
         Nodes = nodeGrid.BuildGrid(cellBounds.size.x, cellBounds.size.y);
 

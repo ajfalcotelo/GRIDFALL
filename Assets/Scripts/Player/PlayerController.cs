@@ -11,12 +11,10 @@ public enum PlayerActionMode
     Attack,
 }
 
+[RequireComponent(typeof(IUnit))]
 public class PlayerController : MonoBehaviour
 {
     public event System.Action OnActionFinished = delegate { };
-
-    [SerializeField]
-    private Tile clickTile;
 
     [SerializeField]
     private Tile hoverTile;
@@ -25,18 +23,9 @@ public class PlayerController : MonoBehaviour
     private Tilemap hoverTilemap;
 
     [SerializeField]
-    private Tilemap clickTilemap;
-
-    [SerializeField]
-    private float moveSpeed = 1f;
-
-    [SerializeField]
     private InputController input;
 
     private Vector3Int prevHoverPosition;
-    private Vector3Int prevClickPosition;
-    private List<PathNode> paths;
-    private bool isMoving = false;
 
     void Start()
     {
@@ -73,40 +62,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnClick(Vector2 mousePosition)
     {
-        Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-        Vector3Int cellPosition = clickTilemap.WorldToCell(mouseWorldPosition);
-
-        if (isMoving && prevClickPosition != cellPosition)
-        {
-            clickTilemap.SetTile(prevClickPosition, null);
-        }
-
-        isMoving = true;
-        clickTilemap.SetTile(cellPosition, clickTile);
-        prevClickPosition = cellPosition;
-
-        Vector2Int mouseXYPos = GridManager.Instance.WorldToXY(mouseWorldPosition);
-        Vector2Int playerXYPos = GridManager.Instance.WorldToXY(transform.position);
-        List<PathNode> path = Pathfinding.FindPath(playerXYPos, mouseXYPos);
-        if (path == null)
-            return;
-
-        for (int i = 0; i < path.Count - 1; i++)
-        {
-            Vector3 start =
-                new Vector3(path[i].Position.x, path[i].Position.y, 0)
-                + GridManager.Instance.GetGroundTilemap.cellBounds.min
-                + Vector3.one * 0.5f;
-            Vector3 end =
-                new Vector3(path[i + 1].Position.x, path[i + 1].Position.y, 0)
-                + GridManager.Instance.GetGroundTilemap.cellBounds.min
-                + Vector3.one * 0.5f;
-
-            Debug.DrawLine(start, end, Color.green, 3f);
-        }
-
-        paths = path;
-        StartCoroutine(FollowPath());
+        PathNode target = GridManager.Instance.GetNode(
+            Camera.main.ScreenToWorldPoint(mousePosition)
+        );
+        Debug.Log(target.Position);
+        StartCoroutine(new MoveAction().Execute(new ActionContext(GetComponent<IUnit>(), target)));
         OnActionFinished.Invoke();
     }
 
@@ -121,39 +81,5 @@ public class PlayerController : MonoBehaviour
             hoverTilemap.SetTile(cellPosition, hoverTile);
             prevHoverPosition = cellPosition;
         }
-    }
-
-    private IEnumerator FollowPath()
-    {
-        foreach (PathNode path in paths)
-        {
-            while (
-                Vector2.Distance(
-                    transform.position,
-                    GridManager.Instance.XYToWorldPos(path.Position.x, path.Position.y)
-                        + Vector2.one * 0.5f
-                ) > 0.05f
-            )
-            {
-                transform.position = Vector2.MoveTowards(
-                    transform.position,
-                    GridManager.Instance.XYToWorldPos(path.Position.x, path.Position.y)
-                        + Vector2.one * 0.5f,
-                    moveSpeed * Time.deltaTime
-                );
-
-                yield return null;
-            }
-        }
-        Vector2 targetTilePos = GridManager.Instance.XYToWorldPos(
-            paths[^1].Position.x,
-            paths[^1].Position.y
-        );
-        clickTilemap.SetTile(
-            clickTilemap.WorldToCell(new Vector3(targetTilePos.x, targetTilePos.y)),
-            null
-        );
-        isMoving = false;
-        hoverTilemap.ClearAllTiles();
     }
 }
