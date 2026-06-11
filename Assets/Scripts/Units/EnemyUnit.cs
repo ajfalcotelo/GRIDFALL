@@ -29,8 +29,11 @@ public class EnemyUnit : MonoBehaviour, IUnit
         currentRange = unitData.Range;
     }
 
-    // void Start()
-    // {
-    //     GridManager.Instance.GetNode(transform.position).Occupant = this;
-    // }
+    void Start()
+    {
+        GridManager.Instance.GetNode(transform.position).Occupant = this;
+        transform.position = GridManager.Instance.GetGroundTilemap.GetCellCenterWorld(
+            Vector3Int.RoundToInt(transform.position)
+        );
+    }
 }

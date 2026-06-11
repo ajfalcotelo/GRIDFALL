@@ -130,7 +130,6 @@ GameObject:
   - component: {fileID: 132355902}
   - component: {fileID: 132355901}
   - component: {fileID: 132355905}
-  - component: {fileID: 132355904}
   - component: {fileID: 132355906}
   m_Layer: 0
   m_Name: Player
@@ -213,18 +212,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &132355904
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 132355900}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7979d00bfb38f234eba9a46cfa32a5ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
 --- !u!61 &132355905
 BoxCollider2D:
   m_ObjectHideFlags: 0
