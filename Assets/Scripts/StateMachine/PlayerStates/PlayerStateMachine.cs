@@ -15,11 +15,10 @@ public class PlayerStateMachine : MonoBehaviour
     [SerializeField]
     private PlayerUnit currentUnit; // temp, should have a list of units controllable by player
 
-    public event Action OnActionExecuted = delegate { };
-
+    public Action OnActionExecuted { get; set; }
     public IState CurrentState { get; set; }
     public PathNode SelectedTargetNode { get; set; }
-    public IAction SelectedAction { get; set; }
+    public BaseAction SelectedAction { get; set; }
 
     public ActionSelectionState ActionSelectionState { get; private set; }
     public TargetSelectionState TargetSelecionState { get; private set; }
@@ -49,11 +48,5 @@ public class PlayerStateMachine : MonoBehaviour
         CurrentState.Exit();
         CurrentState = state;
         CurrentState.Enter();
-    }
-
-    public void ExecuteAction(ActionContext context)
-    {
-        StartCoroutine(SelectedAction.Execute(context));
-        OnActionExecuted.Invoke();
     }
 }

@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveAction : IAction
+public class MoveAction : BaseAction
 {
     private readonly float moveSpeed = 5f;
 
-    public IEnumerator Execute(ActionContext context)
+    protected override IEnumerator Execute(ActionContext context)
     {
         List<PathNode> paths = Pathfinding.FindPath(
             context.Actor.GridPosition,

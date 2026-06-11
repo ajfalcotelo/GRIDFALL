@@ -10,7 +10,8 @@ public class ActionExecutionState : PlayerBaseState
 
     public override void Enter()
     {
-        stateMachine.ExecuteAction(new ActionContext(unit, stateMachine.SelectedTargetNode));
+        var context = new ActionContext(unit, stateMachine.SelectedTargetNode);
+        stateMachine.SelectedAction.Run(stateMachine, context, stateMachine.OnActionExecuted);
     }
 
     public override void Exit() { }

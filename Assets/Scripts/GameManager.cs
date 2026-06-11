@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        playerStateMachine.OnActionExecuted += EndTurn;
+        playerStateMachine.OnActionExecuted = EndTurn;
     }
 
     private void EndTurn()
