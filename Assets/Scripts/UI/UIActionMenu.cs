@@ -1,25 +1,28 @@
+using System;
 using UnityEngine;
 
 public class UIActionMenu : MonoBehaviour
 {
     [SerializeField]
-    private PlayerController playerController;
+    private PlayerStateMachine stateMachine;
+
+    public event Action ButtonPressed = delegate { };
 
     public void SetActionMenuActive()
     {
-        playerController.SetActionMode(PlayerActionMode.None);
         gameObject.SetActive(true);
     }
 
     public void OnMoveButtonPressed()
     {
-        playerController.SetActionMode(PlayerActionMode.Move);
+        stateMachine.SelectedAction = stateMachine.MoveAction;
+        ButtonPressed.Invoke();
         gameObject.SetActive(false);
     }
 
     public void OnAttackButtonPressed()
     {
-        playerController.SetActionMode(PlayerActionMode.Attack);
         gameObject.SetActive(false);
+        ButtonPressed.Invoke();
     }
 }

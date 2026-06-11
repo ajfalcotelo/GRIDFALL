@@ -129,8 +129,8 @@ GameObject:
   m_Component:
   - component: {fileID: 132355902}
   - component: {fileID: 132355901}
-  - component: {fileID: 132355904}
   - component: {fileID: 132355905}
+  - component: {fileID: 132355904}
   - component: {fileID: 132355906}
   m_Layer: 0
   m_Name: Player
@@ -225,12 +225,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7979d00bfb38f234eba9a46cfa32a5ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  clickTile: {fileID: 11400000, guid: 235ca205fc7944b4fa7e7c3bd9bcab2b, type: 2}
-  hoverTile: {fileID: 11400000, guid: c00be674b20cbef4b929fada124d4e75, type: 2}
-  hoverTilemap: {fileID: 1039600953}
-  clickTilemap: {fileID: 266918976}
-  moveSpeed: 5
-  input: {fileID: 1832497468}
 --- !u!61 &132355905
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -302,7 +296,7 @@ GameObject:
   - component: {fileID: 266918976}
   - component: {fileID: 266918975}
   m_Layer: 0
-  m_Name: ClickTilemap
+  m_Name: HighlightTilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -369,7 +363,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1147380055
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
@@ -389,15 +383,57 @@ Tilemap:
   m_Enabled: 1
   m_Tiles: {}
   m_AnimatedTiles: {}
-  m_TileAssetArray: []
-  m_TileSpriteArray: []
-  m_TileMatrixArray: []
-  m_TileColorArray: []
+  m_TileAssetArray:
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  m_TileSpriteArray:
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  m_TileMatrixArray:
+  - m_RefCount: 0
+    m_Data:
+      e00: 1.6186761e+29
+      e01: 0
+      e02: 1.7617879e-14
+      e03: -3.0000038
+      e10: 4.65e-43
+      e11: 0
+      e12: 1.3e-44
+      e13: 4.61e-43
+      e20: 2.1095958e-11
+      e21: 0
+      e22: 1.6641408e+29
+      e23: 9.787838e-19
+      e30: 4.591e-41
+      e31: 0
+      e32: 4.65e-43
+      e33: 4.62e-43
+  m_TileColorArray:
+  - m_RefCount: 0
+    m_Data: {r: -0.0000000012345618, g: -0.0000000012345618, b: -0.0000000012345618, a: -0.0000000012345618}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: 0, y: 0, z: 0}
-  m_Size: {x: 0, y: 0, z: 1}
+  m_Origin: {x: -3, y: -5, z: 0}
+  m_Size: {x: 11, y: 9, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -507,7 +543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7899db81f0c073d4bab6447fe8d298a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIActionMenu
-  playerController: {fileID: 132355904}
+  stateMachine: {fileID: 902373750}
 --- !u!1 &382366335
 GameObject:
   m_ObjectHideFlags: 0
@@ -3410,6 +3446,54 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &902373749
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 902373751}
+  - component: {fileID: 902373750}
+  m_Layer: 0
+  m_Name: PlayerStateMachine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &902373750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 902373749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c26cca50161b3dc4594dc881cf72044e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStateMachine
+  actionMenu: {fileID: 313370137}
+  targetingSystem: {fileID: 973811978}
+  inputController: {fileID: 1832497468}
+  currentUnit: {fileID: 132355906}
+--- !u!4 &902373751
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 902373749}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.08988, y: -0.65369, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &915084641
 GameObject:
   m_ObjectHideFlags: 0
@@ -3458,6 +3542,55 @@ Transform:
   - {fileID: 266918974}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &973811975
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 973811977}
+  - component: {fileID: 973811978}
+  m_Layer: 0
+  m_Name: TargetingSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &973811977
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973811975}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.08988, y: -0.65369, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &973811978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973811975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccde0ca21f0364544b29388f0f0e4311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TargetingSystem
+  hoverTilemap: {fileID: 1039600953}
+  hoverTile: {fileID: 11400000, guid: c00be674b20cbef4b929fada124d4e75, type: 2}
+  highlightTilemap: {fileID: 266918976}
+  highlightRuleTile: {fileID: 11400000, guid: 1195487f29cea924595f3363771b906b, type: 2}
+  obstacleTilemap: {fileID: 454325941}
 --- !u!1 &1039600950
 GameObject:
   m_ObjectHideFlags: 0
@@ -3537,7 +3670,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -2005673257
-  m_SortingLayer: -4
+  m_SortingLayer: -3
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
@@ -4069,7 +4202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   actionMenu: {fileID: 313370137}
-  playerController: {fileID: 132355904}
+  playerStateMachine: {fileID: 902373750}
 --- !u!4 &1536361081
 Transform:
   m_ObjectHideFlags: 0
@@ -4180,11 +4313,13 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
+  - {fileID: 1311293931}
+  - {fileID: 1578819721}
   - {fileID: 915084643}
   - {fileID: 132355902}
   - {fileID: 1284545659}
-  - {fileID: 1578819721}
   - {fileID: 846085636}
-  - {fileID: 1311293931}
   - {fileID: 1536361081}
   - {fileID: 1832497469}
+  - {fileID: 973811977}
+  - {fileID: 902373751}

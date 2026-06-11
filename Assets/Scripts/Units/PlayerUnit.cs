@@ -29,8 +29,8 @@ public class PlayerUnit : MonoBehaviour, IUnit
         currentRange = unitData.Range;
     }
 
-    void Start()
-    {
-        GridManager.Instance.GetNode(transform.position).Occupant = this;
-    }
+    // void Start()
+    // {
+    //     GridManager.Instance.GetNode(transform.position).Occupant = this;
+    // }
 }

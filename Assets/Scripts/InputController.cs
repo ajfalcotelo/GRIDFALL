@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class InputController : MonoBehaviour
 {
-    public event Action<Vector2> Click = delegate { };
+    public event Action<Vector3> Click = delegate { };
     public event Action<Vector2> Hover = delegate { };
 
     private PlayerInputActions inputActions;
@@ -28,8 +28,11 @@ public class InputController : MonoBehaviour
         inputActions.Player.Disable();
     }
 
-    private void OnClick(InputAction.CallbackContext context) =>
-        Click.Invoke(Mouse.current.position.ReadValue());
+    private void OnClick(InputAction.CallbackContext context)
+    {
+        Vector3 pos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Click.Invoke(pos);
+    }
 
     private void OnHover(InputAction.CallbackContext context) =>
         Hover.Invoke(context.ReadValue<Vector2>());

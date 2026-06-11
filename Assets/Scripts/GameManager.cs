@@ -6,15 +6,15 @@ public class GameManager : MonoBehaviour
     private UIActionMenu actionMenu;
 
     [SerializeField]
-    private PlayerController playerController;
+    private PlayerStateMachine playerStateMachine;
 
     void Start()
     {
-        playerController.OnActionFinished += EndTurn;
+        playerStateMachine.OnActionExecuted += EndTurn;
     }
 
     private void EndTurn()
     {
-        actionMenu.SetActionMenuActive();
+        playerStateMachine.SetState(playerStateMachine.ActionSelectionState);
     }
 }

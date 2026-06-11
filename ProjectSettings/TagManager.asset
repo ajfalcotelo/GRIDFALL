@@ -41,11 +41,11 @@ TagManager:
   - name: Ground
     uniqueID: 998227487
     locked: 0
+  - name: Highlight
+    uniqueID: 1147380055
+    locked: 0
   - name: Hover
     uniqueID: 2289294039
-    locked: 0
-  - name: Click
-    uniqueID: 1147380055
     locked: 0
   - name: Obstacle
     uniqueID: 3342173509
