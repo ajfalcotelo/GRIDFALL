@@ -21,18 +21,19 @@ public class TargetSelectionState : PlayerBaseState
 
     public override void Enter()
     {
-        inputController.EnablePlayerInputActions();
+        inputController.EnableSelectionInputs();
         inputController.Click += OnClick;
         inputController.Hover += OnHover;
-        targetingSystem.HighlightSelectableNodes(unit);
+        var range =
+            stateMachine.SelectedAction == stateMachine.MoveAction ? unit.Speed : unit.Range; // temp solution
+        targetingSystem.HighlightSelectableNodes(unit, range);
     }
 
     public override void Exit()
     {
-        targetingSystem.ClearSetTiles();
         inputController.Click -= OnClick;
         inputController.Hover -= OnHover;
-        inputController.DisablePlayerInputActions();
+        inputController.DisableSelectionInputs();
     }
 
     private void OnClick(Vector3 mousePos)

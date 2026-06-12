@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7136eea55bc0cf419d22b4036c26b05, type: 3}
   m_Name: EnemyUnitData
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  maxHealth: 0
-  strength: 0
-  defense: 0
-  speed: 0
-  range: 0
+  maxHealth: 100
+  strength: 1
+  defense: 1
+  speed: 1
+  range: 1

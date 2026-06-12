@@ -22,7 +22,8 @@ public class UIActionMenu : MonoBehaviour
 
     public void OnAttackButtonPressed()
     {
-        gameObject.SetActive(false);
+        stateMachine.SelectedAction = stateMachine.AttackAction;
         ButtonPressed.Invoke();
+        gameObject.SetActive(false);
     }
 }

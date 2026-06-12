@@ -8,6 +8,7 @@ public class MoveAction : BaseAction
 
     protected override IEnumerator Execute(ActionContext context)
     {
+        GridManager.Instance.GetNode(context.Actor.GridPosition).Occupant = null;
         List<PathNode> paths = Pathfinding.FindPath(
             context.Actor.GridPosition,
             context.TargetNode.Position
@@ -35,5 +36,7 @@ public class MoveAction : BaseAction
                 yield return null;
             }
         }
+
+        context.TargetNode.Occupant = context.Actor;
     }
 }

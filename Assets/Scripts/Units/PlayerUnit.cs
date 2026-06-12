@@ -1,8 +1,12 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Health))]
 public class PlayerUnit : MonoBehaviour, IUnit
 {
-    public int CurrentHealth => currentHealth;
+    [SerializeField]
+    private UnitData unitData;
+
+    public int CurrentHealth => health.CurrentHealth;
     public int Strength => currentStrength;
     public int Defense => currentDefense;
     public int Speed => currentSpeed;
@@ -11,18 +15,15 @@ public class PlayerUnit : MonoBehaviour, IUnit
     public Vector2Int GridPosition => GridManager.Instance.WorldToXY(transform.position);
     public GameObject GameObject => gameObject;
 
-    [SerializeField]
-    private UnitData unitData;
-
-    private int currentHealth,
-        currentStrength,
+    private Health health;
+    private int currentStrength,
         currentDefense,
         currentSpeed,
         currentRange;
 
     void Awake()
     {
-        currentHealth = unitData.MaxHealth;
+        health = GetComponent<Health>();
         currentStrength = unitData.Strength;
         currentDefense = unitData.Defense;
         currentSpeed = unitData.Speed;

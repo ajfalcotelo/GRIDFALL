@@ -25,14 +25,26 @@ public class PlayerStateMachine : MonoBehaviour
     public ActionExecutionState ActionExecutionState { get; private set; }
 
     public MoveAction MoveAction { get; private set; }
+    public AttackAction AttackAction { get; private set; }
+
+    void OnEnable()
+    {
+        inputController.Cancel += OnCancelSelection;
+    }
+
+    void OnDisable()
+    {
+        inputController.Cancel -= OnCancelSelection;
+    }
 
     void Start()
     {
-        ActionSelectionState = new(this, actionMenu);
+        ActionSelectionState = new(this, actionMenu, inputController);
         TargetSelecionState = new(this, currentUnit, inputController, targetingSystem);
-        ActionExecutionState = new(this, currentUnit);
+        ActionExecutionState = new(this, currentUnit, inputController);
 
         MoveAction = new();
+        AttackAction = new();
 
         SetState(ActionSelectionState);
     }
@@ -48,5 +60,11 @@ public class PlayerStateMachine : MonoBehaviour
         CurrentState.Exit();
         CurrentState = state;
         CurrentState.Enter();
+    }
+
+    private void OnCancelSelection()
+    {
+        ChangeState(ActionSelectionState);
+        targetingSystem.ClearSetTiles();
     }
 }

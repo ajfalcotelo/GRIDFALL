@@ -23,14 +23,13 @@ public class TargetingSystem : MonoBehaviour
 
     private Dictionary<Vector2Int, PathNode> nodes;
 
-    public void HighlightSelectableNodes(IUnit unit)
+    public void HighlightSelectableNodes(IUnit unit, int range)
     {
         nodes = new();
         List<PathNode> nodeList = new();
 
         PathNode sourceNode = GridManager.Instance.GetNode(unit.GridPosition);
         Vector2Int sourcePosition = sourceNode.Position;
-        int range = unit.Range;
 
         for (int x = sourcePosition.x - range; x <= sourcePosition.x + range; x++)
         {
