@@ -2,7 +2,8 @@ using UnityEngine;
 
 public interface IUnit
 {
-    int CurrentHealth { get; }
+    Health Health { get; }
+    MoveRange MoveRange { get; }
     int Strength { get; }
     int Defense { get; }
     int Speed { get; }

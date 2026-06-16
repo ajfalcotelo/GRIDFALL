@@ -1,23 +1,34 @@
-using UnityEngine;
-
 public class ActionSelectionState : PlayerBaseState
 {
-    private readonly UIActionMenu actionMenu;
+    private readonly PlayerUnit unit;
     private readonly InputController inputController;
+    private readonly UIActionMenu actionMenu;
 
     public ActionSelectionState(
         PlayerStateMachine stateMachine,
-        UIActionMenu actionMenu,
-        InputController inputController
+        PlayerUnit unit,
+        InputController inputController,
+        UIActionMenu actionMenu
     )
         : base(stateMachine)
     {
-        this.actionMenu = actionMenu;
+        this.unit = unit;
         this.inputController = inputController;
+        this.actionMenu = actionMenu;
     }
 
     public override void Enter()
     {
+        if (unit.MoveRange.CurrentMoveRange <= 0)
+            actionMenu.DisableMoveButton();
+        else
+            actionMenu.EnableMoveButton();
+
+        if (unit.ActionCount <= 0)
+            actionMenu.DisableAttackButton();
+        else
+            actionMenu.EnableAttackButton();
+
         inputController.EnablePlayerInputActions();
         actionMenu.SetActionMenuActive();
         actionMenu.ButtonPressed += OnButtonPressed;

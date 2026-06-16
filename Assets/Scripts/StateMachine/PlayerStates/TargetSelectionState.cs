@@ -1,15 +1,14 @@
-using System;
 using UnityEngine;
 
 public class TargetSelectionState : PlayerBaseState
 {
-    private readonly IUnit unit;
+    private readonly PlayerUnit unit;
     private readonly TargetingSystem targetingSystem;
     private readonly InputController inputController;
 
     public TargetSelectionState(
         PlayerStateMachine stateMachine,
-        IUnit unit,
+        PlayerUnit unit,
         InputController inputController,
         TargetingSystem targetingSystem
     )
@@ -26,7 +25,9 @@ public class TargetSelectionState : PlayerBaseState
         inputController.Click += OnClick;
         inputController.Hover += OnHover;
         var range =
-            stateMachine.SelectedAction == stateMachine.MoveAction ? unit.Speed : unit.Range; // temp solution
+            stateMachine.SelectedAction == stateMachine.MoveAction
+                ? unit.MoveRange.CurrentMoveRange
+                : unit.Range; // temp solution
         targetingSystem.HighlightSelectableNodes(unit, range);
     }
 

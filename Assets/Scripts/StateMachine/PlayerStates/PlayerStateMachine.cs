@@ -15,7 +15,6 @@ public class PlayerStateMachine : MonoBehaviour
     [SerializeField]
     private PlayerUnit currentUnit; // temp, should have a list of units controllable by player
 
-    public Action OnActionExecuted { get; set; }
     public IState CurrentState { get; set; }
     public PathNode SelectedTargetNode { get; set; }
     public BaseAction SelectedAction { get; set; }
@@ -23,6 +22,7 @@ public class PlayerStateMachine : MonoBehaviour
     public ActionSelectionState ActionSelectionState { get; private set; }
     public TargetSelectionState TargetSelecionState { get; private set; }
     public ActionExecutionState ActionExecutionState { get; private set; }
+    public EndTurnState EndTurnState { get; private set; }
 
     public MoveAction MoveAction { get; private set; }
     public AttackAction AttackAction { get; private set; }
@@ -39,9 +39,10 @@ public class PlayerStateMachine : MonoBehaviour
 
     void Start()
     {
-        ActionSelectionState = new(this, actionMenu, inputController);
+        ActionSelectionState = new(this, currentUnit, inputController, actionMenu);
         TargetSelecionState = new(this, currentUnit, inputController, targetingSystem);
         ActionExecutionState = new(this, currentUnit, inputController);
+        EndTurnState = new(this, currentUnit);
 
         MoveAction = new();
         AttackAction = new();

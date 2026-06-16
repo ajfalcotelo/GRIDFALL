@@ -14,10 +14,9 @@ public class MoveAction : BaseAction
     protected override IEnumerator Execute(ActionContext context)
     {
         GridManager.Instance.GetNode(context.Actor.GridPosition).Occupant = null;
-        List<PathNode> paths = Pathfinding.FindPath(
-            context.Actor.GridPosition,
-            context.TargetNode.Position
-        );
+        var sourcePos = context.Actor.GridPosition;
+        var targetPos = context.TargetNode.Position;
+        List<PathNode> paths = Pathfinding.FindPath(sourcePos, targetPos);
         if (paths == null)
             yield break;
 
@@ -43,5 +42,13 @@ public class MoveAction : BaseAction
         }
 
         context.TargetNode.Occupant = context.Actor;
+        context.Actor.MoveRange.DecrementMoveRange(GetDistance(sourcePos, targetPos));
+    }
+
+    private int GetDistance(Vector2Int a, Vector2Int b)
+    {
+        var x = Mathf.Abs(a.x - b.x);
+        var y = Mathf.Abs(a.y - b.y);
+        return Mathf.Max(x, y);
     }
 }

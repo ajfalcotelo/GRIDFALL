@@ -1,11 +1,11 @@
 public class ActionExecutionState : PlayerBaseState
 {
-    private readonly IUnit unit;
+    private readonly PlayerUnit unit;
     private readonly InputController inputController;
 
     public ActionExecutionState(
         PlayerStateMachine stateMachine,
-        IUnit unit,
+        PlayerUnit unit,
         InputController inputController
     )
         : base(stateMachine)
@@ -18,7 +18,16 @@ public class ActionExecutionState : PlayerBaseState
     {
         var context = new ActionContext(unit, stateMachine.SelectedTargetNode);
         inputController.DisablePlayerInputActions();
-        stateMachine.SelectedAction.Run(stateMachine, context, stateMachine.OnActionExecuted);
+
+        if ((unit.ActionCount <= 0 && unit.MoveRange.CurrentMoveRange > 0) || unit.ActionCount > 0)
+            stateMachine.SelectedAction.Run(
+                stateMachine,
+                context,
+                new System.Action(() => stateMachine.ChangeState(stateMachine.ActionSelectionState))
+            );
+
+        if (stateMachine.SelectedAction != stateMachine.MoveAction)
+            unit.DecrementActionCount();
     }
 
     public override void Exit() { }

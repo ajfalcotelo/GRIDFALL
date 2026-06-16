@@ -1,12 +1,14 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Health))]
+[RequireComponent(typeof(MoveRange))]
 public class EnemyUnit : MonoBehaviour, IUnit
 {
     [SerializeField]
     private UnitData unitData;
 
-    public int CurrentHealth => health.CurrentHealth;
+    public Health Health => GetComponent<Health>();
+    public MoveRange MoveRange => GetComponent<MoveRange>();
     public int Strength => currentStrength;
     public int Defense => currentDefense;
     public int Speed => currentSpeed;
@@ -15,7 +17,6 @@ public class EnemyUnit : MonoBehaviour, IUnit
     public Vector2Int GridPosition => GridManager.Instance.WorldToXY(transform.position);
     public GameObject GameObject => gameObject;
 
-    private Health health;
     private int currentStrength,
         currentDefense,
         currentSpeed,
@@ -23,7 +24,6 @@ public class EnemyUnit : MonoBehaviour, IUnit
 
     void Awake()
     {
-        health = GetComponent<Health>();
         currentStrength = unitData.Strength;
         currentDefense = unitData.Defense;
         currentSpeed = unitData.Speed;

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public abstract class PlayerBaseState : IState
 {
     protected PlayerStateMachine stateMachine;
