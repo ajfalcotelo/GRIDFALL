@@ -6,6 +6,11 @@ public class MoveAction : BaseAction
 {
     private readonly float moveSpeed = 5f;
 
+    public override bool CanRun(ActionContext context)
+    {
+        return context.TargetNode != null;
+    }
+
     protected override IEnumerator Execute(ActionContext context)
     {
         GridManager.Instance.GetNode(context.Actor.GridPosition).Occupant = null;

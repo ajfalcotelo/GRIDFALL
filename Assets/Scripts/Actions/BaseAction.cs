@@ -19,5 +19,6 @@ public abstract class BaseAction
         OnActionFinished.Invoke();
     }
 
+    public abstract bool CanRun(ActionContext context);
     protected abstract IEnumerator Execute(ActionContext context);
 }

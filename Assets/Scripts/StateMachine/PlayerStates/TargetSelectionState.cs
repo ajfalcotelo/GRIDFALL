@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class TargetSelectionState : PlayerBaseState
@@ -39,8 +40,14 @@ public class TargetSelectionState : PlayerBaseState
     private void OnClick(Vector3 mousePos)
     {
         PathNode selectedNode = GridManager.Instance.GetNode(mousePos);
-        if (!targetingSystem.IsSelectedNodeValid(selectedNode))
+        ActionContext context = new(unit, selectedNode);
+
+        if (
+            !targetingSystem.IsSelectedNodeValid(selectedNode)
+            || !stateMachine.SelectedAction.CanRun(context)
+        )
             return;
+
         targetingSystem.ClearSetTiles();
         stateMachine.SelectedTargetNode = selectedNode;
         stateMachine.ChangeState(stateMachine.ActionExecutionState);
