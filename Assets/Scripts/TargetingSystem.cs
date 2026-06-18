@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -25,30 +26,47 @@ public class TargetingSystem : MonoBehaviour
 
     public void HighlightSelectableNodes(IUnit unit, int range)
     {
-        nodes = new();
+        PathNode sourceNode = GridManager.Instance.GetNode(unit.GridPosition);
+        nodes = FindInRange(sourceNode, range).ToDictionary(e => e.Position, e => e);
         List<PathNode> nodeList = new();
 
-        PathNode sourceNode = GridManager.Instance.GetNode(unit.GridPosition);
-        Vector2Int sourcePosition = sourceNode.Position;
-
-        for (int x = sourcePosition.x - range; x <= sourcePosition.x + range; x++)
-        {
-            for (int y = sourcePosition.y - range; y <= sourcePosition.y + range; y++)
-            {
-                var node = GridManager.Instance.GetNode(new Vector2Int(x, y));
-                var tileWorldPos = GridManager.Instance.XYToWorldPos(x, y);
-                if (node == null || obstacleTilemap.HasTile(Vector3Int.RoundToInt(tileWorldPos)))
-                    continue;
-                nodes.Add(new Vector2Int(x, y), node);
-                nodeList.Add(node);
-            }
-        }
-
-        foreach (var node in nodeList)
+        foreach (var node in nodes.Values)
         {
             Vector3 pos = GridManager.Instance.XYToWorldPos(node.Position.x, node.Position.y);
             highlightTilemap.SetTile(Vector3Int.RoundToInt(pos), highlightRuleTile);
         }
+    }
+
+    private List<PathNode> FindInRange(PathNode source, int range)
+    {
+        Queue<(PathNode node, int dist)> queue = new();
+        HashSet<PathNode> visited = new();
+        List<PathNode> inRangeNodes = new();
+
+        queue.Enqueue((source, 0));
+        visited.Add(source);
+
+        while (queue.Any())
+        {
+            var (node, dist) = queue.Dequeue();
+
+            inRangeNodes.Add(node);
+
+            if (dist >= range)
+                continue;
+
+            foreach (
+                PathNode neighbor in node.CardinalNeighbors.Where(node =>
+                    node.IsWalkable && !visited.Contains(node)
+                )
+            )
+            {
+                visited.Add(neighbor);
+                queue.Enqueue((neighbor, dist + 1));
+            }
+        }
+
+        return inRangeNodes;
     }
 
     public bool IsSelectedNodeValid(PathNode selectedNode)

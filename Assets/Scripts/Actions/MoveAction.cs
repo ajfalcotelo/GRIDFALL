@@ -47,8 +47,8 @@ public class MoveAction : BaseAction
 
     private int GetDistance(Vector2Int a, Vector2Int b)
     {
-        var x = Mathf.Abs(a.x - b.x);
-        var y = Mathf.Abs(a.y - b.y);
-        return Mathf.Max(x, y);
+        var dx = Mathf.Abs(a.x - b.x);
+        var dy = Mathf.Abs(a.y - b.y);
+        return dx + dy;
     }
 }

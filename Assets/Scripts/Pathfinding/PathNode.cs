@@ -12,20 +12,25 @@ public class PathNode
     public string HCostText { get; private set; }
     public string FCostText { get; private set; }
 
-    private readonly Vector2Int[] directions =
+    private readonly Vector2Int[] cardinalDirections =
     {
         new(0, 1), // Up
-        new(1, 1), // Up-Right
         new(1, 0), // Right
-        new(1, -1), // Down-Right
         new(0, -1), // Down
-        new(-1, -1), // Down-Left
         new(-1, 0), // Left
+    };
+
+    private readonly Vector2Int[] diagonalDirections =
+    {
+        new(1, 1), // Up-Right
+        new(1, -1), // Down-Right
+        new(-1, -1), // Down-Left
         new(-1, 1), // Up-Left
     };
 
     public Vector2Int Position { get; private set; }
-    public List<PathNode> Neighbors { get; private set; }
+    public List<PathNode> AllNeighbors { get; private set; }
+    public List<PathNode> CardinalNeighbors { get; private set; }
     public PathNode Parent { get; set; }
     public int GCost { get; private set; }
     public int HCost { get; private set; }
@@ -54,16 +59,30 @@ public class PathNode
 
     public void ListNeighbors()
     {
-        Neighbors = new List<PathNode>();
+        List<PathNode> diagonalNeighbors = new();
+        CardinalNeighbors = new();
 
         foreach (
-            var dir in directions
+            var dir in cardinalDirections
                 .Select(dir => GridManager.Instance.GetNode(Position + dir))
                 .Where(node => node != null)
         )
         {
-            Neighbors.Add(dir);
+            CardinalNeighbors.Add(dir);
         }
+
+        foreach (
+            var dir in diagonalDirections
+                .Select(dir => GridManager.Instance.GetNode(Position + dir))
+                .Where(node => node != null)
+        )
+        {
+            diagonalNeighbors.Add(dir);
+        }
+
+        AllNeighbors = new(CardinalNeighbors.Count + diagonalNeighbors.Count);
+        AllNeighbors.AddRange(CardinalNeighbors);
+        AllNeighbors.AddRange(diagonalNeighbors);
     }
 
     public int GetDistance(PathNode other)

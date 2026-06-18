@@ -45,7 +45,7 @@ public class Pathfinding
 
             // Evaluate neighbor nodes
             foreach (
-                PathNode neighbor in current.Neighbors.Where(node =>
+                PathNode neighbor in current.AllNeighbors.Where(node =>
                     node.IsWalkable && !closedList.Contains(node)
                 )
             )
