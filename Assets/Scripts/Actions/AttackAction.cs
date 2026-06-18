@@ -7,6 +7,11 @@ public class AttackAction : BaseAction
         return context.TargetNode.Occupant != null;
     }
 
+    public override TargetingData GetTargetingData(IUnit unit)
+    {
+        return new TargetingData(unit.Range);
+    }
+
     protected override IEnumerator Execute(ActionContext context)
     {
         context.TargetNode.Occupant.Health.TakeDamage(context.Actor.Strength);

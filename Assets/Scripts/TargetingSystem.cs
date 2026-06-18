@@ -24,8 +24,9 @@ public class TargetingSystem : MonoBehaviour
 
     private Dictionary<Vector2Int, PathNode> nodes;
 
-    public void HighlightSelectableNodes(IUnit unit, int range)
+    public void HighlightSelectableNodes(IUnit unit, TargetingData data)
     {
+        var range = data.Range;
         PathNode sourceNode = GridManager.Instance.GetNode(unit.GridPosition);
         nodes = FindInRange(sourceNode, range).ToDictionary(e => e.Position, e => e);
         List<PathNode> nodeList = new();

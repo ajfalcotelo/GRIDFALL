@@ -24,11 +24,8 @@ public class TargetSelectionState : PlayerBaseState
         inputController.EnableSelectionInputs();
         inputController.Click += OnClick;
         inputController.Hover += OnHover;
-        var range =
-            stateMachine.SelectedAction == stateMachine.MoveAction
-                ? unit.MoveRange.CurrentMoveRange
-                : unit.Range; // temp solution
-        targetingSystem.HighlightSelectableNodes(unit, range);
+        TargetingData targetData = stateMachine.SelectedAction.GetTargetingData(unit);
+        targetingSystem.HighlightSelectableNodes(unit, targetData);
     }
 
     public override void Exit()

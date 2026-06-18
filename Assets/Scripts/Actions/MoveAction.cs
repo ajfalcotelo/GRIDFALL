@@ -11,6 +11,11 @@ public class MoveAction : BaseAction
         return context.TargetNode != null;
     }
 
+    public override TargetingData GetTargetingData(IUnit unit)
+    {
+        return new TargetingData(unit.MoveRange.CurrentMoveRange);
+    }
+
     protected override IEnumerator Execute(ActionContext context)
     {
         GridManager.Instance.GetNode(context.Actor.GridPosition).Occupant = null;
