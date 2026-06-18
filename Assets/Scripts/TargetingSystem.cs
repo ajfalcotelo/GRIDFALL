@@ -21,15 +21,22 @@ public class TargetingSystem : MonoBehaviour
     private Tilemap obstacleTilemap;
 
     private Vector3Int prevHoverPosition;
-
     private Dictionary<Vector2Int, PathNode> nodes;
 
     public void HighlightSelectableNodes(PlayerUnitRoot unit, TargetingData data)
     {
         var range = data.Range;
         PathNode sourceNode = GridManager.Instance.GetNode(unit.GridPosition);
-        nodes = FindInRange(sourceNode, range).ToDictionary(e => e.Position, e => e);
-        List<PathNode> nodeList = new();
+
+        switch (data.ActionType)
+        {
+            case ActionType.Move:
+                nodes = BFSFind(sourceNode, range).ToDictionary(e => e.Position, e => e);
+                break;
+            case ActionType.Attack:
+                nodes = ChebFind(sourceNode, range).ToDictionary(e => e.Position, e => e);
+                break;
+        }
 
         foreach (var node in nodes.Values)
         {
@@ -38,7 +45,7 @@ public class TargetingSystem : MonoBehaviour
         }
     }
 
-    private List<PathNode> FindInRange(PathNode source, int range)
+    private List<PathNode> BFSFind(PathNode source, int range)
     {
         Queue<(PathNode node, int dist)> queue = new();
         HashSet<PathNode> visited = new();
@@ -58,12 +65,32 @@ public class TargetingSystem : MonoBehaviour
 
             foreach (
                 PathNode neighbor in node.CardinalNeighbors.Where(node =>
-                    node.IsWalkable && !visited.Contains(node)
+                    node.IsWalkable && !visited.Contains(node) && node.Occupant == null
                 )
             )
             {
                 visited.Add(neighbor);
                 queue.Enqueue((neighbor, dist + 1));
+            }
+        }
+
+        return inRangeNodes;
+    }
+
+    private List<PathNode> ChebFind(PathNode source, int range)
+    {
+        Vector2Int sourcePosition = source.Position;
+        List<PathNode> inRangeNodes = new();
+
+        for (int x = sourcePosition.x - range; x <= sourcePosition.x + range; x++)
+        {
+            for (int y = sourcePosition.y - range; y <= sourcePosition.y + range; y++)
+            {
+                var pos = new Vector2Int(x, y);
+                var node = GridManager.Instance.GetNode(pos);
+                if (node == null || sourcePosition == pos)
+                    continue;
+                inRangeNodes.Add(node);
             }
         }
 

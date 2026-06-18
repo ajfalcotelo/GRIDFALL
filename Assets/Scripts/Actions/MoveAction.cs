@@ -13,7 +13,7 @@ public class MoveAction : BaseAction
 
     public override TargetingData GetTargetingData(PlayerUnitRoot unit)
     {
-        return new TargetingData(unit.MoveRange.CurrentMoveRange);
+        return new TargetingData(unit.MoveRange.CurrentMoveRange, ActionType.Move);
     }
 
     protected override IEnumerator Execute(ActionContext context)

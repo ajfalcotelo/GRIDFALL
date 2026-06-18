@@ -9,7 +9,7 @@ public class AttackAction : BaseAction
 
     public override TargetingData GetTargetingData(PlayerUnitRoot unit)
     {
-        return new TargetingData(unit.Stats.Range);
+        return new TargetingData(unit.Stats.Range, ActionType.Attack);
     }
 
     protected override IEnumerator Execute(ActionContext context)

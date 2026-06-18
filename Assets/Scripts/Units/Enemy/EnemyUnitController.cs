@@ -14,9 +14,9 @@ public class EnemyUnitController : MonoBehaviour, IUnitController
 
     void Start()
     {
-        GridManager.Instance.GetNode(transform.position).Occupant = unit;
         transform.position = GridManager.Instance.GetGroundTilemap.GetCellCenterWorld(
             Vector3Int.RoundToInt(transform.position)
         );
+        GridManager.Instance.GetNode(transform.position).Occupant = unit;
     }
 }
