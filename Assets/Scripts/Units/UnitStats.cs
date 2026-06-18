@@ -1,8 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Health))]
-[RequireComponent(typeof(MoveRange))]
-public class PlayerUnit : MonoBehaviour, IUnit
+public class UnitStats : MonoBehaviour
 {
     [SerializeField]
     private UnitData unitData;
@@ -11,11 +9,6 @@ public class PlayerUnit : MonoBehaviour, IUnit
     public int Defense => currentDefense;
     public int Speed => currentSpeed;
     public int Range => currentRange;
-
-    public Health Health => GetComponent<Health>();
-    public MoveRange MoveRange => GetComponent<MoveRange>();
-    public Vector2Int GridPosition => GridManager.Instance.WorldToXY(transform.position);
-    public GameObject GameObject => gameObject;
 
     public int ActionCount { get; private set; }
 
@@ -31,14 +24,6 @@ public class PlayerUnit : MonoBehaviour, IUnit
         currentSpeed = unitData.Speed;
         currentRange = unitData.Range;
         ActionCount = 1;
-    }
-
-    void Start()
-    {
-        GridManager.Instance.GetNode(transform.position).Occupant = this;
-        transform.position = GridManager.Instance.GetGroundTilemap.GetCellCenterWorld(
-            Vector3Int.RoundToInt(transform.position)
-        );
     }
 
     public void ResetActionCount() => ActionCount = 1;

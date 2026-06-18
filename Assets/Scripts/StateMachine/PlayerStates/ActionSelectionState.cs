@@ -1,18 +1,17 @@
 public class ActionSelectionState : PlayerBaseState
 {
-    private readonly PlayerUnit unit;
     private readonly InputController inputController;
     private readonly UIActionMenu actionMenu;
 
     public ActionSelectionState(
-        PlayerStateMachine stateMachine,
-        PlayerUnit unit,
+        StateMachine stateMachine,
+        PlayerUnitRoot unit,
+        PlayerUnitController unitController,
         InputController inputController,
         UIActionMenu actionMenu
     )
-        : base(stateMachine)
+        : base(stateMachine, unit, unitController)
     {
-        this.unit = unit;
         this.inputController = inputController;
         this.actionMenu = actionMenu;
     }
@@ -24,7 +23,7 @@ public class ActionSelectionState : PlayerBaseState
         else
             actionMenu.EnableMoveButton();
 
-        if (unit.ActionCount <= 0)
+        if (unit.Stats.ActionCount <= 0)
             actionMenu.DisableAttackButton();
         else
             actionMenu.EnableAttackButton();
@@ -41,6 +40,6 @@ public class ActionSelectionState : PlayerBaseState
 
     private void OnButtonPressed()
     {
-        stateMachine.ChangeState(stateMachine.TargetSelecionState);
+        stateMachine.ChangeState(unitController.TargetSelecionState);
     }
 }

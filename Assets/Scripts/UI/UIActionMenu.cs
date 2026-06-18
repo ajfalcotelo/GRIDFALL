@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class UIActionMenu : MonoBehaviour
 {
     [SerializeField]
-    private PlayerStateMachine stateMachine;
+    private PlayerUnitController unitController;
 
     [SerializeField]
     private Button moveButton;
@@ -33,20 +33,20 @@ public class UIActionMenu : MonoBehaviour
 
     public void OnMoveButtonPressed()
     {
-        stateMachine.SelectedAction = stateMachine.MoveAction;
+        unitController.SelectedAction = unitController.MoveAction;
         ButtonPressed.Invoke();
         gameObject.SetActive(false);
     }
 
     public void OnAttackButtonPressed()
     {
-        stateMachine.SelectedAction = stateMachine.AttackAction;
+        unitController.SelectedAction = unitController.AttackAction;
         ButtonPressed.Invoke();
         gameObject.SetActive(false);
     }
 
     public void OnEndTurnButtonPressed()
     {
-        stateMachine.ChangeState(stateMachine.EndTurnState);
+        unitController.StateMachine.ChangeState(unitController.EndTurnState);
     }
 }

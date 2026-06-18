@@ -1,8 +1,21 @@
 public abstract class PlayerBaseState : IState
 {
-    protected PlayerStateMachine stateMachine;
+    protected StateMachine stateMachine;
+    protected PlayerUnitRoot unit;
+    protected PlayerUnitController unitController;
 
-    public PlayerBaseState(PlayerStateMachine stateMachine)
+    public PlayerBaseState(
+        StateMachine stateMachine,
+        PlayerUnitRoot unit,
+        PlayerUnitController unitController
+    )
+    {
+        this.stateMachine = stateMachine;
+        this.unit = unit;
+        this.unitController = unitController;
+    }
+
+    protected PlayerBaseState(StateMachine stateMachine)
     {
         this.stateMachine = stateMachine;
     }

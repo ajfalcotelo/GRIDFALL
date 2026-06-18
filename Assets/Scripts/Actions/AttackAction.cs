@@ -7,14 +7,14 @@ public class AttackAction : BaseAction
         return context.TargetNode.Occupant != null;
     }
 
-    public override TargetingData GetTargetingData(IUnit unit)
+    public override TargetingData GetTargetingData(PlayerUnitRoot unit)
     {
-        return new TargetingData(unit.Range);
+        return new TargetingData(unit.Stats.Range);
     }
 
     protected override IEnumerator Execute(ActionContext context)
     {
-        context.TargetNode.Occupant.Health.TakeDamage(context.Actor.Strength);
+        context.TargetNode.Occupant.Health.TakeDamage(context.Actor.Stats.Strength);
         yield break;
     }
 }

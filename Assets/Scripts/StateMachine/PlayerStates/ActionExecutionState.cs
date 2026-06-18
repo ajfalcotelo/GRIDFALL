@@ -1,33 +1,37 @@
 public class ActionExecutionState : PlayerBaseState
 {
-    private readonly PlayerUnit unit;
     private readonly InputController inputController;
 
     public ActionExecutionState(
-        PlayerStateMachine stateMachine,
-        PlayerUnit unit,
+        StateMachine stateMachine,
+        PlayerUnitRoot unit,
+        PlayerUnitController unitController,
         InputController inputController
     )
-        : base(stateMachine)
+        : base(stateMachine, unit, unitController)
     {
-        this.unit = unit;
         this.inputController = inputController;
     }
 
     public override void Enter()
     {
-        var context = new ActionContext(unit, stateMachine.SelectedTargetNode);
+        var context = new ActionContext(unit, unitController.SelectedTargetNode);
         inputController.DisablePlayerInputActions();
 
-        if ((unit.ActionCount <= 0 && unit.MoveRange.CurrentMoveRange > 0) || unit.ActionCount > 0)
-            stateMachine.SelectedAction.Run(
-                stateMachine,
+        if (
+            (unit.Stats.ActionCount <= 0 && unit.MoveRange.CurrentMoveRange > 0)
+            || unit.Stats.ActionCount > 0
+        )
+            unitController.SelectedAction.Run(
+                unitController,
                 context,
-                new System.Action(() => stateMachine.ChangeState(stateMachine.ActionSelectionState))
+                new System.Action(() =>
+                    stateMachine.ChangeState(unitController.ActionSelectionState)
+                )
             );
 
-        if (stateMachine.SelectedAction != stateMachine.MoveAction)
-            unit.DecrementActionCount();
+        if (unitController.SelectedAction != unitController.MoveAction)
+            unit.Stats.DecrementActionCount();
     }
 
     public override void Exit() { }

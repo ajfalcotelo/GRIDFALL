@@ -11,7 +11,7 @@ public class MoveAction : BaseAction
         return context.TargetNode != null;
     }
 
-    public override TargetingData GetTargetingData(IUnit unit)
+    public override TargetingData GetTargetingData(PlayerUnitRoot unit)
     {
         return new TargetingData(unit.MoveRange.CurrentMoveRange);
     }
@@ -29,14 +29,14 @@ public class MoveAction : BaseAction
         {
             while (
                 Vector2.Distance(
-                    context.Actor.GameObject.transform.position,
+                    context.Actor.transform.position,
                     GridManager.Instance.XYToWorldPos(path.Position.x, path.Position.y)
                         + Vector2.one * 0.5f
                 ) > 0.05f
             )
             {
-                context.Actor.GameObject.transform.position = Vector2.MoveTowards(
-                    context.Actor.GameObject.transform.position,
+                context.Actor.transform.position = Vector2.MoveTowards(
+                    context.Actor.transform.position,
                     GridManager.Instance.XYToWorldPos(path.Position.x, path.Position.y)
                         + Vector2.one * 0.5f,
                     moveSpeed * Time.deltaTime

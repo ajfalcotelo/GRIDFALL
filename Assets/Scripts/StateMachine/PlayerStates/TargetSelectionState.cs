@@ -2,19 +2,18 @@ using UnityEngine;
 
 public class TargetSelectionState : PlayerBaseState
 {
-    private readonly PlayerUnit unit;
     private readonly TargetingSystem targetingSystem;
     private readonly InputController inputController;
 
     public TargetSelectionState(
-        PlayerStateMachine stateMachine,
-        PlayerUnit unit,
+        StateMachine stateMachine,
+        PlayerUnitRoot unit,
+        PlayerUnitController unitController,
         InputController inputController,
         TargetingSystem targetingSystem
     )
-        : base(stateMachine)
+        : base(stateMachine, unit, unitController)
     {
-        this.unit = unit;
         this.inputController = inputController;
         this.targetingSystem = targetingSystem;
     }
@@ -24,7 +23,7 @@ public class TargetSelectionState : PlayerBaseState
         inputController.EnableSelectionInputs();
         inputController.Click += OnClick;
         inputController.Hover += OnHover;
-        TargetingData targetData = stateMachine.SelectedAction.GetTargetingData(unit);
+        TargetingData targetData = unitController.SelectedAction.GetTargetingData(unit);
         targetingSystem.HighlightSelectableNodes(unit, targetData);
     }
 
@@ -42,13 +41,13 @@ public class TargetSelectionState : PlayerBaseState
 
         if (
             !targetingSystem.IsSelectedNodeValid(selectedNode)
-            || !stateMachine.SelectedAction.CanRun(context)
+            || !unitController.SelectedAction.CanRun(context)
         )
             return;
 
         targetingSystem.ClearSetTiles();
-        stateMachine.SelectedTargetNode = selectedNode;
-        stateMachine.ChangeState(stateMachine.ActionExecutionState);
+        unitController.SelectedTargetNode = selectedNode;
+        stateMachine.ChangeState(unitController.ActionExecutionState);
     }
 
     private void OnHover(Vector2 mousePosition)

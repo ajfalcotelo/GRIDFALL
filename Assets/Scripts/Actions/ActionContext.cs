@@ -1,9 +1,9 @@
 public class ActionContext
 {
-    public IUnit Actor { get; }
+    public PlayerUnitRoot Actor { get; }
     public PathNode TargetNode { get; }
 
-    public ActionContext(IUnit actor, PathNode targetNode)
+    public ActionContext(PlayerUnitRoot actor, PathNode targetNode)
     {
         Actor = actor;
         TargetNode = targetNode;

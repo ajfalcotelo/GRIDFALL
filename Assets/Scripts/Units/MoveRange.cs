@@ -7,7 +7,7 @@ public class MoveRange : MonoBehaviour
 
     public int CurrentMoveRange { get; private set; }
 
-    void Start()
+    void Awake()
     {
         CurrentMoveRange = unitData.Speed;
     }

@@ -36,7 +36,7 @@ public class PathNode
     public int HCost { get; private set; }
     public int FCost => GCost + HCost;
     public bool IsWalkable { get; set; }
-    public IUnit Occupant { get; set; }
+    public IUnitRoot Occupant { get; set; }
 
     public PathNode(Vector2Int position)
     {
