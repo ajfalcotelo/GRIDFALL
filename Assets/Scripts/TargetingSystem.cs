@@ -23,26 +23,32 @@ public class TargetingSystem : MonoBehaviour
     private Vector3Int prevHoverPosition;
     private Dictionary<Vector2Int, PathNode> nodes;
 
-    public void HighlightSelectableNodes(PlayerUnitRoot unit, TargetingData data)
+    public void HighlightSelectableNodes(IUnitRoot unit, TargetingData data)
     {
-        var range = data.Range;
-        PathNode sourceNode = GridManager.Instance.GetNode(unit.GridPosition);
-
-        switch (data.ActionType)
-        {
-            case ActionType.Move:
-                nodes = BFSFind(sourceNode, range).ToDictionary(e => e.Position, e => e);
-                break;
-            case ActionType.Attack:
-                nodes = ChebFind(sourceNode, range).ToDictionary(e => e.Position, e => e);
-                break;
-        }
-
+        nodes = GetReachableNodes(unit, data).ToDictionary(e => e.Position, e => e);
         foreach (var node in nodes.Values)
         {
             Vector3 pos = GridManager.Instance.XYToWorldPos(node.Position.x, node.Position.y);
             highlightTilemap.SetTile(Vector3Int.RoundToInt(pos), highlightRuleTile);
         }
+    }
+
+    public List<PathNode> GetReachableNodes(IUnitRoot unit, TargetingData data)
+    {
+        return data.ActionType switch
+        {
+            ActionType.Move => BFSFind(unit.CurrentNode, data.Range),
+            ActionType.Attack => ChebFind(unit.CurrentNode, data.Range),
+            _ => null,
+        };
+    }
+
+    public bool IsSelectedNodeValid(PathNode selectedNode)
+    {
+        PathNode node = nodes.TryGetValue(selectedNode.Position, out PathNode pathNode)
+            ? pathNode
+            : null;
+        return node != null;
     }
 
     private List<PathNode> BFSFind(PathNode source, int range)
@@ -95,14 +101,6 @@ public class TargetingSystem : MonoBehaviour
         }
 
         return inRangeNodes;
-    }
-
-    public bool IsSelectedNodeValid(PathNode selectedNode)
-    {
-        PathNode node = nodes.TryGetValue(selectedNode.Position, out PathNode pathNode)
-            ? pathNode
-            : null;
-        return node != null;
     }
 
     public void ClearSetTiles()

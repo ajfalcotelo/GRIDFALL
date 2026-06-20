@@ -1,4 +1,4 @@
 public interface IUnitController
 {
-    public StateMachine StateMachine { get; }
+    void StartTurn();
 }

@@ -48,5 +48,6 @@ public class UIActionMenu : MonoBehaviour
     public void OnEndTurnButtonPressed()
     {
         unitController.StateMachine.ChangeState(unitController.EndTurnState);
+        gameObject.SetActive(false);
     }
 }

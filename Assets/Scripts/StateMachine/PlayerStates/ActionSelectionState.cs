@@ -1,5 +1,6 @@
-public class ActionSelectionState : PlayerBaseState
+public class ActionSelectionState : BaseState
 {
+    private readonly PlayerUnitController unitController;
     private readonly InputController inputController;
     private readonly UIActionMenu actionMenu;
 
@@ -10,8 +11,9 @@ public class ActionSelectionState : PlayerBaseState
         InputController inputController,
         UIActionMenu actionMenu
     )
-        : base(stateMachine, unit, unitController)
+        : base(stateMachine, unit)
     {
+        this.unitController = unitController;
         this.inputController = inputController;
         this.actionMenu = actionMenu;
     }
@@ -40,6 +42,6 @@ public class ActionSelectionState : PlayerBaseState
 
     private void OnButtonPressed()
     {
-        stateMachine.ChangeState(unitController.TargetSelecionState);
+        ChangeState(unitController.TargetSelecionState);
     }
 }

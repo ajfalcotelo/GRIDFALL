@@ -1,16 +1,18 @@
-public class ActionExecutionState : PlayerBaseState
+public class ActionExecutionState : BaseState
 {
+    private readonly PlayerUnitController unitController;
     private readonly InputController inputController;
 
     public ActionExecutionState(
         StateMachine stateMachine,
-        PlayerUnitRoot unit,
+        IUnitRoot unit,
         PlayerUnitController unitController,
         InputController inputController
     )
-        : base(stateMachine, unit, unitController)
+        : base(stateMachine, unit)
     {
         this.inputController = inputController;
+        this.unitController = unitController;
     }
 
     public override void Enter()
@@ -25,9 +27,7 @@ public class ActionExecutionState : PlayerBaseState
             unitController.SelectedAction.Run(
                 unitController,
                 context,
-                new System.Action(() =>
-                    stateMachine.ChangeState(unitController.ActionSelectionState)
-                )
+                new System.Action(() => ChangeState(unitController.ActionSelectionState))
             );
 
         if (unitController.SelectedAction != unitController.MoveAction)

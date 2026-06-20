@@ -1,19 +1,21 @@
 using UnityEngine;
 
-public class TargetSelectionState : PlayerBaseState
+public class TargetSelectionState : BaseState
 {
+    private readonly PlayerUnitController unitController;
     private readonly TargetingSystem targetingSystem;
     private readonly InputController inputController;
 
     public TargetSelectionState(
         StateMachine stateMachine,
-        PlayerUnitRoot unit,
+        IUnitRoot unit,
         PlayerUnitController unitController,
         InputController inputController,
         TargetingSystem targetingSystem
     )
-        : base(stateMachine, unit, unitController)
+        : base(stateMachine, unit)
     {
+        this.unitController = unitController;
         this.inputController = inputController;
         this.targetingSystem = targetingSystem;
     }
@@ -47,7 +49,7 @@ public class TargetSelectionState : PlayerBaseState
 
         targetingSystem.ClearSetTiles();
         unitController.SelectedTargetNode = selectedNode;
-        stateMachine.ChangeState(unitController.ActionExecutionState);
+        ChangeState(unitController.ActionExecutionState);
     }
 
     private void OnHover(Vector2 mousePosition)

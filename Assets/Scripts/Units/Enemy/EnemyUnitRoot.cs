@@ -10,7 +10,8 @@ public class EnemyUnitRoot : MonoBehaviour, IUnitRoot
     public MoveRange MoveRange { get; private set; }
     public UnitStats Stats { get; private set; }
     public IUnitController Controller { get; private set; }
-    public Vector2Int GridPosition => GridManager.Instance.WorldToXY(transform.position);
+    public PathNode CurrentNode => GridManager.Instance.GetNode(transform.position);
+    public GameObject GameObject => gameObject;
 
     void Awake()
     {

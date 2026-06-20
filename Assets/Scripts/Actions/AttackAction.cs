@@ -7,7 +7,7 @@ public class AttackAction : BaseAction
         return context.TargetNode.Occupant != null;
     }
 
-    public override TargetingData GetTargetingData(PlayerUnitRoot unit)
+    public override TargetingData GetTargetingData(IUnitRoot unit)
     {
         return new TargetingData(unit.Stats.Range, ActionType.Attack);
     }

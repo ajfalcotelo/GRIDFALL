@@ -12,6 +12,9 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
     [SerializeField]
     private InputController inputController;
 
+    [SerializeField]
+    private BattleManager battleManager;
+
     public IState CurrentState { get; set; }
     public PathNode SelectedTargetNode { get; set; }
     public BaseAction SelectedAction { get; set; }
@@ -31,6 +34,7 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
     void Awake()
     {
         unit = GetComponent<PlayerUnitRoot>();
+        SetupStateMachine();
     }
 
     void OnEnable()
@@ -45,8 +49,6 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
 
     void Start()
     {
-        SetupStateMachine();
-
         transform.position = GridManager.Instance.GetGroundTilemap.GetCellCenterWorld(
             Vector3Int.RoundToInt(transform.position)
         );
@@ -60,11 +62,14 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
         ActionSelectionState = new(StateMachine, unit, this, inputController, actionMenu);
         TargetSelecionState = new(StateMachine, unit, this, inputController, targetingSystem);
         ActionExecutionState = new(StateMachine, unit, this, inputController);
-        EndTurnState = new(StateMachine, unit, this);
+        EndTurnState = new(StateMachine, unit, battleManager);
 
         MoveAction = new();
         AttackAction = new();
+    }
 
+    public void StartTurn()
+    {
         StateMachine.SetState(ActionSelectionState);
     }
 

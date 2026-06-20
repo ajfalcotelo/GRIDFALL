@@ -6,5 +6,6 @@ public interface IUnitRoot
     MoveRange MoveRange { get; }
     UnitStats Stats { get; }
     IUnitController Controller { get; }
-    Vector2Int GridPosition { get; }
+    PathNode CurrentNode { get; }
+    GameObject GameObject { get; }
 }

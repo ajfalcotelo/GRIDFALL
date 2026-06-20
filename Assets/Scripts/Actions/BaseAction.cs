@@ -19,7 +19,7 @@ public abstract class BaseAction
         OnActionFinished.Invoke();
     }
 
-    public abstract TargetingData GetTargetingData(PlayerUnitRoot unit);
+    public abstract TargetingData GetTargetingData(IUnitRoot unit);
     public abstract bool CanRun(ActionContext context);
     protected abstract IEnumerator Execute(ActionContext context);
 }

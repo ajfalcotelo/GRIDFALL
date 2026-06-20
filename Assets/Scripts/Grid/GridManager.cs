@@ -36,9 +36,12 @@ public class GridManager : MonoBehaviour
                 GetNode(obstaclePos).IsWalkable = false;
             }
         }
-
-        ShowGridDebug(false);
     }
+
+    // void Update()
+    // {
+    //     ShowGridDebug(true);
+    // }
 
     public PathNode GetNode(Vector2Int cellposition) =>
         Nodes.TryGetValue(cellposition, out PathNode pathNode) ? pathNode : null;
@@ -71,7 +74,10 @@ public class GridManager : MonoBehaviour
                     transform.localPosition = XYToWorldPos(x, y) + Vector2.one * 0.5f;
                     TextMeshPro textMesh = gameObject.GetComponent<TextMeshPro>();
                     textMesh.alignment = TextAlignmentOptions.Center;
-                    textMesh.text = GetNode(new Vector2Int(x, y)).IsWalkable ? null : "X";
+                    textMesh.text =
+                        GetNode(new Vector2Int(x, y)).Occupant != null
+                            ? $"{GetNode(new Vector2Int(x, y)).Occupant}"
+                            : "";
                     textMesh.fontSize = 4;
                     textMesh.color = Color.white;
 

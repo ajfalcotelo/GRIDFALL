@@ -11,15 +11,15 @@ public class MoveAction : BaseAction
         return context.TargetNode != null;
     }
 
-    public override TargetingData GetTargetingData(PlayerUnitRoot unit)
+    public override TargetingData GetTargetingData(IUnitRoot unit)
     {
         return new TargetingData(unit.MoveRange.CurrentMoveRange, ActionType.Move);
     }
 
     protected override IEnumerator Execute(ActionContext context)
     {
-        GridManager.Instance.GetNode(context.Actor.GridPosition).Occupant = null;
-        var sourcePos = context.Actor.GridPosition;
+        context.Actor.CurrentNode.Occupant = null;
+        var sourcePos = context.Actor.CurrentNode.Position;
         var targetPos = context.TargetNode.Position;
         List<PathNode> paths = Pathfinding.FindPath(sourcePos, targetPos);
         if (paths == null)
@@ -29,14 +29,14 @@ public class MoveAction : BaseAction
         {
             while (
                 Vector2.Distance(
-                    context.Actor.transform.position,
+                    context.Actor.GameObject.transform.position,
                     GridManager.Instance.XYToWorldPos(path.Position.x, path.Position.y)
                         + Vector2.one * 0.5f
                 ) > 0.05f
             )
             {
-                context.Actor.transform.position = Vector2.MoveTowards(
-                    context.Actor.transform.position,
+                context.Actor.GameObject.transform.position = Vector2.MoveTowards(
+                    context.Actor.GameObject.transform.position,
                     GridManager.Instance.XYToWorldPos(path.Position.x, path.Position.y)
                         + Vector2.one * 0.5f,
                     moveSpeed * Time.deltaTime

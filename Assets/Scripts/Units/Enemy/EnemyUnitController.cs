@@ -3,8 +3,26 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyUnitRoot))]
 public class EnemyUnitController : MonoBehaviour, IUnitController
 {
-    public StateMachine StateMachine { get; }
+    [SerializeField]
+    private BattleManager battleManager;
 
+    [SerializeField]
+    private TargetingSystem targetingSystem;
+
+    [SerializeField]
+    private PlayerUnitRoot player;
+
+    public BaseAction SelectedAction { get; set; }
+    public PathNode SelectedTargetNode { get; set; }
+
+    public DecisionState DecisionState { get; private set; }
+    public PerformDecisionState PerformDecisionState { get; private set; }
+    public EndTurnState EndTurnState { get; private set; }
+
+    public MoveAction MoveAction { get; private set; }
+    public AttackAction AttackAction { get; private set; }
+
+    private StateMachine stateMachine;
     private EnemyUnitRoot unit;
 
     void Awake()
@@ -14,9 +32,28 @@ public class EnemyUnitController : MonoBehaviour, IUnitController
 
     void Start()
     {
+        SetupStateMachine();
+
         transform.position = GridManager.Instance.GetGroundTilemap.GetCellCenterWorld(
             Vector3Int.RoundToInt(transform.position)
         );
         GridManager.Instance.GetNode(transform.position).Occupant = unit;
+    }
+
+    private void SetupStateMachine()
+    {
+        stateMachine = new();
+
+        DecisionState = new(stateMachine, unit, this, targetingSystem, player);
+        PerformDecisionState = new(stateMachine, unit, this);
+        EndTurnState = new(stateMachine, unit, battleManager);
+
+        MoveAction = new();
+        AttackAction = new();
+    }
+
+    public void StartTurn()
+    {
+        stateMachine.SetState(DecisionState);
     }
 }
