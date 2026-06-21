@@ -37,7 +37,7 @@ public class DecisionState : BaseState
 
         var attackTarget =
             targets.Count > 0 ? GetNearestNode(targets, unit.CurrentNode.Position) : null;
-        if (attackTarget != null)
+        if (attackTarget != null && unit.Stats.ActionCount > 0)
         {
             unitController.SelectedTargetNode = attackTarget;
             unitController.SelectedAction = unitController.AttackAction;
@@ -50,10 +50,15 @@ public class DecisionState : BaseState
             unitController.MoveAction.GetTargetingData(unit)
         );
         var moveTarget = GetNearestNode(nodes, player.CurrentNode.Position);
-        unitController.SelectedTargetNode = moveTarget;
-        unitController.SelectedAction = unitController.MoveAction;
+        if (moveTarget.Position != unit.CurrentNode.Position && unit.MoveRange.CurrentMoveRange > 0)
+        {
+            unitController.SelectedTargetNode = moveTarget;
+            unitController.SelectedAction = unitController.MoveAction;
+            ChangeState(unitController.PerformDecisionState);
+            return;
+        }
 
-        ChangeState(unitController.PerformDecisionState);
+        ChangeState(unitController.EndTurnState);
     }
 
     public override void Exit() { }

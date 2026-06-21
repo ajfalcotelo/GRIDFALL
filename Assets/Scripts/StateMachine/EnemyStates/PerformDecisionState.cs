@@ -17,7 +17,7 @@ public class PerformDecisionState : BaseState
         unitController.SelectedAction.Run(
             unitController,
             new ActionContext(unit, unitController.SelectedTargetNode),
-            new System.Action(() => ChangeState(unitController.EndTurnState))
+            new System.Action(() => ChangeState(unitController.DecisionState))
         );
     }
 
