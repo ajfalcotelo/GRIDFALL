@@ -17,7 +17,6 @@ public class ActionExecutionState : BaseState
 
     public override void Enter()
     {
-        var context = new ActionContext(unit, unitController.SelectedTargetNode);
         inputController.DisablePlayerInputActions();
 
         if (
@@ -26,12 +25,9 @@ public class ActionExecutionState : BaseState
         )
             unitController.SelectedAction.Run(
                 unitController,
-                context,
+                new ActionContext(unit, unitController.SelectedTargetNode),
                 new System.Action(() => ChangeState(unitController.ActionSelectionState))
             );
-
-        if (unitController.SelectedAction != unitController.MoveAction)
-            unit.Stats.DecrementActionCount();
     }
 
     public override void Exit() { }
