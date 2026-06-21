@@ -67,7 +67,10 @@ public class DecisionState : BaseState
         {
             var dist = GetDistance(node.Position, target);
             if (dist < minDist)
+            {
+                minDist = dist;
                 nearest = node;
+            }
         }
 
         return nearest;
