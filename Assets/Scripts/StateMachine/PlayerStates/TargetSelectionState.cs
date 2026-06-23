@@ -25,6 +25,7 @@ public class TargetSelectionState : BaseState
         inputController.EnableSelectionInputs();
         inputController.Click += OnClick;
         inputController.Hover += OnHover;
+        inputController.Cancel += OnCancelSelection;
         TargetingData targetData = unitController.SelectedAction.GetTargetingData(unit);
         targetingSystem.HighlightSelectableNodes(unit, targetData);
     }
@@ -33,6 +34,7 @@ public class TargetSelectionState : BaseState
     {
         inputController.Click -= OnClick;
         inputController.Hover -= OnHover;
+        inputController.Cancel -= OnCancelSelection;
         inputController.DisableSelectionInputs();
     }
 
@@ -55,5 +57,11 @@ public class TargetSelectionState : BaseState
     private void OnHover(Vector2 mousePosition)
     {
         targetingSystem.HighlightMouseHover(mousePosition);
+    }
+
+    private void OnCancelSelection()
+    {
+        ChangeState(unitController.ActionSelectionState);
+        targetingSystem.ClearSetTiles();
     }
 }

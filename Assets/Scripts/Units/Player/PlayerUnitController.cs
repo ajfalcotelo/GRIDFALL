@@ -37,16 +37,6 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
         SetupStateMachine();
     }
 
-    void OnEnable()
-    {
-        inputController.Cancel += OnCancelSelection;
-    }
-
-    void OnDisable()
-    {
-        inputController.Cancel -= OnCancelSelection;
-    }
-
     void Start()
     {
         transform.position = GridManager.Instance.GetGroundTilemap.GetCellCenterWorld(
@@ -71,11 +61,5 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
     public void StartTurn()
     {
         StateMachine.SetState(ActionSelectionState);
-    }
-
-    private void OnCancelSelection()
-    {
-        StateMachine.ChangeState(ActionSelectionState);
-        targetingSystem.ClearSetTiles();
     }
 }
