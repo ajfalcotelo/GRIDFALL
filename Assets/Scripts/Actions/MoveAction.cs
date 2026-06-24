@@ -30,15 +30,13 @@ public class MoveAction : BaseAction
             while (
                 Vector2.Distance(
                     context.Actor.GameObject.transform.position,
-                    GridManager.Instance.XYToWorldPos(path.Position.x, path.Position.y)
-                        + Vector2.one * 0.5f
+                    GridManager.Instance.XYToWorldPos(path.Position) + Vector2.one * 0.5f
                 ) > 0.05f
             )
             {
                 context.Actor.GameObject.transform.position = Vector2.MoveTowards(
                     context.Actor.GameObject.transform.position,
-                    GridManager.Instance.XYToWorldPos(path.Position.x, path.Position.y)
-                        + Vector2.one * 0.5f,
+                    GridManager.Instance.XYToWorldPos(path.Position) + Vector2.one * 0.5f,
                     moveSpeed * Time.deltaTime
                 );
 

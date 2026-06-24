@@ -57,42 +57,39 @@ public class GridManager : MonoBehaviour
         return new Vector2Int(x, y);
     }
 
-    private void ShowGridDebug(bool show)
-    {
-        int width = groundTilemap.cellBounds.size.x;
-        int height = groundTilemap.cellBounds.size.y;
+    // private void ShowGridDebug(bool show)
+    // {
+    //     int width = groundTilemap.cellBounds.size.x;
+    //     int height = groundTilemap.cellBounds.size.y;
 
-        if (show)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    GameObject gameObject = new("World_Text", typeof(TextMeshPro));
-                    Transform transform = gameObject.transform;
-                    transform.SetParent(null, false);
-                    transform.localPosition = XYToWorldPos(x, y) + Vector2.one * 0.5f;
-                    TextMeshPro textMesh = gameObject.GetComponent<TextMeshPro>();
-                    textMesh.alignment = TextAlignmentOptions.Center;
-                    textMesh.text =
-                        GetNode(new Vector2Int(x, y)).Occupant != null
-                            ? $"{GetNode(new Vector2Int(x, y)).Occupant}"
-                            : "";
-                    textMesh.fontSize = 4;
-                    textMesh.color = Color.white;
+    //     if (show)
+    //     {
+    //         for (int x = 0; x < width; x++)
+    //         {
+    //             for (int y = 0; y < height; y++)
+    //             {
+    //                 GameObject gameObject = new("World_Text", typeof(TextMeshPro));
+    //                 Transform transform = gameObject.transform;
+    //                 transform.SetParent(null, false);
+    //                 transform.localPosition = XYToWorldPos(x, y) + Vector2.one * 0.5f;
+    //                 TextMeshPro textMesh = gameObject.GetComponent<TextMeshPro>();
+    //                 textMesh.alignment = TextAlignmentOptions.Center;
+    //                 textMesh.text =
+    //                     GetNode(new Vector2Int(x, y)).Occupant != null
+    //                         ? $"{GetNode(new Vector2Int(x, y)).Occupant}"
+    //                         : "";
+    //                 textMesh.fontSize = 4;
+    //                 textMesh.color = Color.white;
 
-                    Debug.DrawLine(XYToWorldPos(x, y), XYToWorldPos(x + 1, y), Color.white, 100f);
-                    Debug.DrawLine(XYToWorldPos(x, y), XYToWorldPos(x, y + 1), Color.white, 100f);
-                }
-            }
-            Debug.DrawLine(XYToWorldPos(0, height), XYToWorldPos(width, height), Color.white, 100f);
-            Debug.DrawLine(XYToWorldPos(width, 0), XYToWorldPos(width, height), Color.white, 100f);
-        }
-    }
+    //                 Debug.DrawLine(XYToWorldPos(x, y), XYToWorldPos(x + 1, y), Color.white, 100f);
+    //                 Debug.DrawLine(XYToWorldPos(x, y), XYToWorldPos(x, y + 1), Color.white, 100f);
+    //             }
+    //         }
+    //         Debug.DrawLine(XYToWorldPos(0, height), XYToWorldPos(width, height), Color.white, 100f);
+    //         Debug.DrawLine(XYToWorldPos(width, 0), XYToWorldPos(width, height), Color.white, 100f);
+    //     }
+    // }
 
-    public Vector2 XYToWorldPos(int x, int y)
-    {
-        return new Vector2(x, y)
-            + new Vector2(groundTilemap.cellBounds.min.x, groundTilemap.cellBounds.min.y);
-    }
+    public Vector2 XYToWorldPos(Vector2Int pos) =>
+        pos + new Vector2(groundTilemap.cellBounds.min.x, groundTilemap.cellBounds.min.y);
 }

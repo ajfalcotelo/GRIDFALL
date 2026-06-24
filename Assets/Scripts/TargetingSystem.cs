@@ -28,7 +28,7 @@ public class TargetingSystem : MonoBehaviour
         nodes = GetReachableNodes(unit, data).ToDictionary(e => e.Position, e => e);
         foreach (var node in nodes.Values)
         {
-            Vector3 pos = GridManager.Instance.XYToWorldPos(node.Position.x, node.Position.y);
+            Vector3 pos = GridManager.Instance.XYToWorldPos(node.Position);
             highlightTilemap.SetTile(Vector3Int.RoundToInt(pos), highlightRuleTile);
         }
     }
