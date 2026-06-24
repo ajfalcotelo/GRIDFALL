@@ -8,4 +8,5 @@ public interface IUnitRoot
     IUnitController Controller { get; }
     PathNode CurrentNode { get; }
     GameObject GameObject { get; }
+    SpriteRenderer SpriteRenderer { get; }
 }

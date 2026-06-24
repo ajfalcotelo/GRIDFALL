@@ -7,10 +7,13 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
     private UIActionMenu actionMenu;
 
     [SerializeField]
+    private InputController inputController;
+
+    [SerializeField]
     private TargetingSystem targetingSystem;
 
     [SerializeField]
-    private InputController inputController;
+    private MovementPreviewSystem pathLineRenderer;
 
     [SerializeField]
     private BattleManager battleManager;
@@ -50,7 +53,14 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
         StateMachine = new();
 
         ActionSelectionState = new(StateMachine, unit, this, inputController, actionMenu);
-        TargetSelecionState = new(StateMachine, unit, this, inputController, targetingSystem);
+        TargetSelecionState = new(
+            StateMachine,
+            unit,
+            this,
+            inputController,
+            targetingSystem,
+            pathLineRenderer
+        );
         ActionExecutionState = new(StateMachine, unit, this, inputController);
         EndTurnState = new(StateMachine, unit, battleManager);
 

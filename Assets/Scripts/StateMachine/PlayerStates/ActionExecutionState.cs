@@ -25,7 +25,11 @@ public class ActionExecutionState : BaseState
         )
             unitController.SelectedAction.Run(
                 unitController,
-                new ActionContext(unit, unitController.SelectedTargetNode),
+                new ActionContext()
+                {
+                    Actor = unit,
+                    TargetNode = unitController.SelectedTargetNode,
+                },
                 new System.Action(() => ChangeState(unitController.ActionSelectionState))
             );
     }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EnemyUnitData
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   maxHealth: 100
-  strength: 1
+  strength: 15
   defense: 1
-  speed: 2
+  speed: 3
   range: 1

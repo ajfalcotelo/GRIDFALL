@@ -1,23 +1,29 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TargetSelectionState : BaseState
 {
     private readonly PlayerUnitController unitController;
-    private readonly TargetingSystem targetingSystem;
     private readonly InputController inputController;
+    private readonly TargetingSystem targetingSystem;
+    private readonly MovementPreviewSystem movementPreviewSystem;
+    private PathNode prevHoverNode;
+    private bool hasHovered;
 
     public TargetSelectionState(
         StateMachine stateMachine,
         IUnitRoot unit,
         PlayerUnitController unitController,
         InputController inputController,
-        TargetingSystem targetingSystem
+        TargetingSystem targetingSystem,
+        MovementPreviewSystem movementPreviewSystem
     )
         : base(stateMachine, unit)
     {
         this.unitController = unitController;
         this.inputController = inputController;
         this.targetingSystem = targetingSystem;
+        this.movementPreviewSystem = movementPreviewSystem;
     }
 
     public override void Enter()
@@ -41,7 +47,7 @@ public class TargetSelectionState : BaseState
     private void OnClick(Vector3 mousePos)
     {
         PathNode selectedNode = GridManager.Instance.GetNode(mousePos);
-        ActionContext context = new(unit, selectedNode);
+        ActionContext context = new() { Actor = unit, TargetNode = selectedNode };
 
         if (
             !targetingSystem.IsSelectedNodeValid(selectedNode)
@@ -50,13 +56,67 @@ public class TargetSelectionState : BaseState
             return;
 
         targetingSystem.ClearSetTiles();
+        movementPreviewSystem.Clear();
         unitController.SelectedTargetNode = selectedNode;
         ChangeState(unitController.ActionExecutionState);
     }
 
     private void OnHover(Vector2 mousePosition)
     {
-        targetingSystem.HighlightMouseHover(mousePosition);
+        Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+
+        if (unitController.SelectedAction == unitController.MoveAction)
+        {
+            MoveHover(mouseWorldPosition);
+            return;
+        }
+
+        PathNode hoveredNode = GridManager.Instance.GetNode(mouseWorldPosition);
+        if (targetingSystem.IsSelectedNodeValid(hoveredNode))
+        {
+            targetingSystem.HighlightHover(mouseWorldPosition);
+        }
+    }
+
+    private void MoveHover(Vector3 mouseWorldPosition)
+    {
+        PathNode hoveredNode = GridManager.Instance.GetNode(mouseWorldPosition);
+        if (
+            hoveredNode == null
+            || !hoveredNode.IsWalkable
+            || !targetingSystem.IsSelectedNodeValid(hoveredNode)
+        )
+        {
+            movementPreviewSystem.Clear();
+            targetingSystem.ClearHover();
+            prevHoverNode = null;
+            hasHovered = false;
+            return;
+        }
+
+        if (!hasHovered)
+        {
+            prevHoverNode = hoveredNode;
+            targetingSystem.HighlightHover(mouseWorldPosition);
+            List<PathNode> path = Pathfinding.FindPath(
+                unit.CurrentNode.Position,
+                hoveredNode.Position
+            );
+            movementPreviewSystem.RenderPreview(unit, path);
+            hasHovered = true;
+        }
+
+        if (hoveredNode != prevHoverNode)
+        {
+            List<PathNode> path = Pathfinding.FindPath(
+                unit.CurrentNode.Position,
+                hoveredNode.Position
+            );
+            movementPreviewSystem.RenderPreview(unit, path);
+            targetingSystem.HighlightHover(mouseWorldPosition);
+
+            prevHoverNode = hoveredNode;
+        }
     }
 
     private void OnCancelSelection()

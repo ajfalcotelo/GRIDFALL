@@ -20,7 +20,6 @@ public class TargetingSystem : MonoBehaviour
     [SerializeField]
     private Tilemap obstacleTilemap;
 
-    private Vector3Int prevHoverPosition;
     private Dictionary<Vector2Int, PathNode> nodes;
 
     public void HighlightSelectableNodes(IUnitRoot unit, TargetingData data)
@@ -109,16 +108,15 @@ public class TargetingSystem : MonoBehaviour
         hoverTilemap.ClearAllTiles();
     }
 
-    public void HighlightMouseHover(Vector2 mousePosition)
+    public void HighlightHover(Vector3 mouseWorldPosition)
     {
-        Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-        Vector3Int cellPosition = hoverTilemap.WorldToCell(mouseWorldPosition);
+        Vector3Int current = hoverTilemap.WorldToCell(mouseWorldPosition);
+        ClearHover();
+        hoverTilemap.SetTile(current, hoverTile);
+    }
 
-        if (cellPosition != prevHoverPosition)
-        {
-            hoverTilemap.SetTile(prevHoverPosition, null);
-            hoverTilemap.SetTile(cellPosition, hoverTile);
-            prevHoverPosition = cellPosition;
-        }
+    public void ClearHover()
+    {
+        hoverTilemap.ClearAllTiles();
     }
 }
