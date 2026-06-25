@@ -38,20 +38,20 @@ public class MovementPreviewSystem : MonoBehaviour
         ghostSR.sprite = unit.SpriteRenderer.sprite;
         ghostSR.color = new Color(1f, 1f, 1f, 0.8f);
         ghostObject.transform.position =
-            GridManager.Instance.XYToWorldPos(path[^1].Position) + Vector2.one * 0.5f;
+            GridManager.Instance.NodeToWorld(path[^1].Position) + Vector2.one * 0.5f;
         ghostObject.SetActive(true);
 
         lineRenderer.positionCount = path.Count;
 
         for (int i = 0; i < path.Count; i++)
         {
-            var pos = GridManager.Instance.XYToWorldPos(path[i].Position) + Vector2.one * 0.5f;
+            var pos = GridManager.Instance.NodeToWorld(path[i].Position) + Vector2.one * 0.5f;
 
             if (i == 0 && path.Count > 1)
             {
                 var dir =
-                    GridManager.Instance.XYToWorldPos(path[1].Position)
-                    - GridManager.Instance.XYToWorldPos(path[0].Position);
+                    GridManager.Instance.NodeToWorld(path[1].Position)
+                    - GridManager.Instance.NodeToWorld(path[0].Position);
                 pos += dir * 0.5f;
             }
 

@@ -27,7 +27,7 @@ public class TargetingSystem : MonoBehaviour
         nodes = GetReachableNodes(unit, data).ToDictionary(e => e.Position, e => e);
         foreach (var node in nodes.Values)
         {
-            Vector3 pos = GridManager.Instance.XYToWorldPos(node.Position);
+            Vector3 pos = GridManager.Instance.NodeToWorld(node.Position);
             highlightTilemap.SetTile(Vector3Int.RoundToInt(pos), highlightRuleTile);
         }
     }
@@ -70,7 +70,9 @@ public class TargetingSystem : MonoBehaviour
 
             foreach (
                 PathNode neighbor in node.CardinalNeighbors.Where(node =>
-                    node.IsWalkable && !visited.Contains(node) && node.Occupant == null
+                    node.IsWalkable
+                    && !visited.Contains(node)
+                    && GridManager.Instance.OccupancyLayer.GetNode(node.Position) == null
                 )
             )
             {
@@ -92,7 +94,7 @@ public class TargetingSystem : MonoBehaviour
             for (int y = sourcePosition.y - range; y <= sourcePosition.y + range; y++)
             {
                 var pos = new Vector2Int(x, y);
-                var node = GridManager.Instance.GetNode(pos);
+                var node = GridManager.Instance.PathfindLayer.GetNode(pos);
                 if (node == null || sourcePosition == pos)
                     continue;
                 inRangeNodes.Add(node);

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 
 public class PathNode
@@ -36,25 +35,21 @@ public class PathNode
     public int HCost { get; private set; }
     public int FCost => GCost + HCost;
     public bool IsWalkable { get; set; }
-    public IUnitRoot Occupant { get; set; }
 
     public PathNode(Vector2Int position)
     {
         Position = position;
         IsWalkable = true;
-        Occupant = null;
     }
 
     public void SetGCost(int value)
     {
         GCost = value;
-        SetText();
     }
 
     public void SetHCost(int value)
     {
         HCost = value;
-        SetText();
     }
 
     public void ListNeighbors()
@@ -64,7 +59,7 @@ public class PathNode
 
         foreach (
             var dir in cardinalDirections
-                .Select(dir => GridManager.Instance.GetNode(Position + dir))
+                .Select(dir => GridManager.Instance.PathfindLayer.GetNode(Position + dir))
                 .Where(node => node != null)
         )
         {
@@ -73,7 +68,7 @@ public class PathNode
 
         foreach (
             var dir in diagonalDirections
-                .Select(dir => GridManager.Instance.GetNode(Position + dir))
+                .Select(dir => GridManager.Instance.PathfindLayer.GetNode(Position + dir))
                 .Where(node => node != null)
         )
         {
@@ -98,12 +93,5 @@ public class PathNode
         var horizontalMovesRequired = highest - lowest;
 
         return lowest * MOVE_DIAGONAL_COST + horizontalMovesRequired * MOVE_STRAIGHT_COST;
-    }
-
-    private void SetText()
-    {
-        GCostText = GCost.ToString();
-        HCostText = HCost.ToString();
-        FCostText = FCost.ToString();
     }
 }

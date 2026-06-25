@@ -46,7 +46,7 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
         transform.position = GridManager.Instance.GetGroundTilemap.GetCellCenterWorld(
             Vector3Int.RoundToInt(transform.position)
         );
-        GridManager.Instance.GetNode(transform.position).Occupant = unit;
+        GridManager.Instance.OccupancyLayer.SetNode(transform.position, unit);
     }
 
     private void SetupStateMachine()
