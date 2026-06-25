@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -23,7 +22,8 @@ public class BattleManager : MonoBehaviour
 
     public void BattleStart()
     {
-        initiative = units.OrderByDescending(e => e.Stats.Speed).ToList();
+        initiative = new(units);
+        initiative.Sort((i, j) => j.Stats.Speed.CompareTo(i.Stats.Speed));
         currentTurnIndex = 0;
         StartUnitTurn();
     }

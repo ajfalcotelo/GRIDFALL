@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class PathNode
@@ -57,22 +56,18 @@ public class PathNode
         List<PathNode> diagonalNeighbors = new();
         CardinalNeighbors = new();
 
-        foreach (
-            var dir in cardinalDirections
-                .Select(dir => GridManager.Instance.PathfindLayer.GetNode(Position + dir))
-                .Where(node => node != null)
-        )
+        foreach (var dir in cardinalDirections)
         {
-            CardinalNeighbors.Add(dir);
+            var node = GridManager.Instance.PathfindLayer.GetNode(Position + dir);
+            if (node != null)
+                CardinalNeighbors.Add(node);
         }
 
-        foreach (
-            var dir in diagonalDirections
-                .Select(dir => GridManager.Instance.PathfindLayer.GetNode(Position + dir))
-                .Where(node => node != null)
-        )
+        foreach (var dir in diagonalDirections)
         {
-            diagonalNeighbors.Add(dir);
+            var node = GridManager.Instance.PathfindLayer.GetNode(Position + dir);
+            if (node != null)
+                diagonalNeighbors.Add(node);
         }
 
         AllNeighbors = new(CardinalNeighbors.Count + diagonalNeighbors.Count);

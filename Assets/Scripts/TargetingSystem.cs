@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -24,7 +23,13 @@ public class TargetingSystem : MonoBehaviour
 
     public void HighlightSelectableNodes(IUnitRoot unit, TargetingData data)
     {
-        nodes = GetReachableNodes(unit, data).ToDictionary(e => e.Position, e => e);
+        nodes = new();
+        var list = GetReachableNodes(unit, data);
+        foreach (var node in list)
+        {
+            nodes.Add(node.Position, node);
+        }
+
         foreach (var node in nodes.Values)
         {
             Vector3 pos = GridManager.Instance.NodeToWorld(node.Position);
@@ -59,7 +64,7 @@ public class TargetingSystem : MonoBehaviour
         queue.Enqueue((source, 0));
         visited.Add(source);
 
-        while (queue.Any())
+        while (queue.Count > 0)
         {
             var (node, dist) = queue.Dequeue();
 
@@ -68,16 +73,17 @@ public class TargetingSystem : MonoBehaviour
             if (dist >= range)
                 continue;
 
-            foreach (
-                PathNode neighbor in node.CardinalNeighbors.Where(node =>
-                    node.IsWalkable
-                    && !visited.Contains(node)
-                    && GridManager.Instance.OccupancyLayer.GetNode(node.Position) == null
-                )
-            )
+            foreach (PathNode neighbor in node.CardinalNeighbors)
             {
-                visited.Add(neighbor);
-                queue.Enqueue((neighbor, dist + 1));
+                if (
+                    neighbor.IsWalkable
+                    && !visited.Contains(neighbor)
+                    && GridManager.Instance.OccupancyLayer.GetNode(neighbor.Position) == null
+                )
+                {
+                    visited.Add(neighbor);
+                    queue.Enqueue((neighbor, dist + 1));
+                }
             }
         }
 
