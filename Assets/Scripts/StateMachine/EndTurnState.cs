@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class EndTurnState : BaseState
 {
     private readonly BattleManager battleManager;

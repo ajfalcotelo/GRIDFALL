@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -9,9 +8,8 @@ public class PathfindLayer : BaseLayer<PathNode>
 
     public void BuildLayer(Tilemap obstacle)
     {
-        var bounds = ground.cellBounds;
-        var width = bounds.size.x;
-        var height = bounds.size.y;
+        var width = ground.cellBounds.size.x;
+        var height = ground.cellBounds.size.y;
         cells = new PathNode[width, height];
 
         for (int x = 0; x < width; x++)
