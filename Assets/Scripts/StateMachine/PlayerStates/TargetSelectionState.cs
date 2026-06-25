@@ -97,26 +97,22 @@ public class TargetSelectionState : BaseState
         if (!hasHovered)
         {
             prevHoverNode = hoveredNode;
-            targetingSystem.HighlightHover(mouseWorldPosition);
-            List<PathNode> path = Pathfinding.FindPath(
-                unit.CurrentNode.Position,
-                hoveredNode.Position
-            );
-            movementPreviewSystem.RenderPreview(unit, path);
+            PreviewMove(mouseWorldPosition, hoveredNode);
             hasHovered = true;
         }
 
         if (hoveredNode != prevHoverNode)
         {
-            List<PathNode> path = Pathfinding.FindPath(
-                unit.CurrentNode.Position,
-                hoveredNode.Position
-            );
-            movementPreviewSystem.RenderPreview(unit, path);
-            targetingSystem.HighlightHover(mouseWorldPosition);
-
+            PreviewMove(mouseWorldPosition, hoveredNode);
             prevHoverNode = hoveredNode;
         }
+    }
+
+    private void PreviewMove(Vector3 mouseWorldPosition, PathNode hoveredNode)
+    {
+        List<PathNode> path = Pathfinding.FindPath(unit.CurrentNode.Position, hoveredNode.Position);
+        movementPreviewSystem.RenderPreview(unit, path);
+        targetingSystem.HighlightHover(mouseWorldPosition);
     }
 
     private void OnCancelSelection()
