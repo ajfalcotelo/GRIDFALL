@@ -21,7 +21,7 @@ public class MoveAction : BaseAction
         context.Actor.CurrentNode.Occupant = null;
         var sourcePos = context.Actor.CurrentNode.Position;
         var targetPos = context.TargetNode.Position;
-        List<PathNode> paths = Pathfinding.FindPath(sourcePos, targetPos);
+        List<PathNode> paths = context.Path;
         if (paths == null)
             yield break;
 

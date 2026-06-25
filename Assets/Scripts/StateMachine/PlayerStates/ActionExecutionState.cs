@@ -29,6 +29,7 @@ public class ActionExecutionState : BaseState
                 {
                     Actor = unit,
                     TargetNode = unitController.SelectedTargetNode,
+                    Path = unitController.SelectedPath,
                 },
                 new System.Action(() => ChangeState(unitController.ActionSelectionState))
             );

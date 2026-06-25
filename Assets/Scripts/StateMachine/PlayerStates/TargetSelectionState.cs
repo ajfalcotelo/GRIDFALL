@@ -7,6 +7,7 @@ public class TargetSelectionState : BaseState
     private readonly InputController inputController;
     private readonly TargetingSystem targetingSystem;
     private readonly MovementPreviewSystem movementPreviewSystem;
+    private List<PathNode> plannedPath;
     private PathNode prevHoverNode;
     private bool hasHovered;
 
@@ -58,6 +59,7 @@ public class TargetSelectionState : BaseState
         targetingSystem.ClearSetTiles();
         movementPreviewSystem.Clear();
         unitController.SelectedTargetNode = selectedNode;
+        unitController.SelectedPath = plannedPath;
         ChangeState(unitController.ActionExecutionState);
     }
 
@@ -113,6 +115,7 @@ public class TargetSelectionState : BaseState
         List<PathNode> path = Pathfinding.FindPath(unit.CurrentNode.Position, hoveredNode.Position);
         movementPreviewSystem.RenderPreview(unit, path);
         targetingSystem.HighlightHover(mouseWorldPosition);
+        plannedPath = path;
     }
 
     private void OnCancelSelection()

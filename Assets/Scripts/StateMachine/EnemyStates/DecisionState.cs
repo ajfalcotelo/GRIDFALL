@@ -54,6 +54,10 @@ public class DecisionState : BaseState
         {
             unitController.SelectedTargetNode = moveTarget;
             unitController.SelectedAction = unitController.MoveAction;
+            unitController.SelectedPath = Pathfinding.FindPath(
+                unit.CurrentNode.Position,
+                moveTarget.Position
+            );
             ChangeState(unitController.PerformDecisionState);
             return;
         }

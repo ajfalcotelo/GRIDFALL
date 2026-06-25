@@ -16,7 +16,12 @@ public class PerformDecisionState : BaseState
     {
         unitController.SelectedAction.Run(
             unitController,
-            new ActionContext() { Actor = unit, TargetNode = unitController.SelectedTargetNode },
+            new ActionContext()
+            {
+                Actor = unit,
+                TargetNode = unitController.SelectedTargetNode,
+                Path = unitController.SelectedPath,
+            },
             new System.Action(() => ChangeState(unitController.DecisionState))
         );
     }

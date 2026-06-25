@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerUnitRoot))]
@@ -18,9 +19,9 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
     [SerializeField]
     private BattleManager battleManager;
 
-    public IState CurrentState { get; set; }
     public PathNode SelectedTargetNode { get; set; }
     public BaseAction SelectedAction { get; set; }
+    public List<PathNode> SelectedPath { get; set; }
 
     public ActionSelectionState ActionSelectionState { get; private set; }
     public TargetSelectionState TargetSelecionState { get; private set; }

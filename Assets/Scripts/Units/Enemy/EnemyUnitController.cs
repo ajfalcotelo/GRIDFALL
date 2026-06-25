@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(EnemyUnitRoot))]
@@ -14,6 +15,7 @@ public class EnemyUnitController : MonoBehaviour, IUnitController
 
     public BaseAction SelectedAction { get; set; }
     public PathNode SelectedTargetNode { get; set; }
+    public List<PathNode> SelectedPath { get; set; }
 
     public DecisionState DecisionState { get; private set; }
     public PerformDecisionState PerformDecisionState { get; private set; }
