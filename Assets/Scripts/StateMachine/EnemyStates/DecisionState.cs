@@ -31,7 +31,7 @@ public class DecisionState : BaseState
         List<PathNode> targets = new();
         foreach (var node in nodes)
         {
-            if (node.Occupant != null)
+            if (GridManager.Instance.OccupancyLayer.GetNode(node.Position) != null)
                 targets.Add(node);
         }
 

@@ -47,8 +47,12 @@ public class TargetSelectionState : BaseState
 
     private void OnClick(Vector3 mousePos)
     {
-        PathNode selectedNode = GridManager.Instance.GetNode(mousePos);
-        ActionContext context = new() { Actor = unit, TargetNode = selectedNode };
+        PathNode selectedNode = GridManager.Instance.PathfindLayer.GetNode(mousePos);
+        ActionContext context = new()
+        {
+            Actor = unit,
+            TargetNode = GridManager.Instance.PathfindLayer.GetNode(selectedNode.Position),
+        };
 
         if (
             !targetingSystem.IsSelectedNodeValid(selectedNode)
@@ -73,7 +77,7 @@ public class TargetSelectionState : BaseState
             return;
         }
 
-        PathNode hoveredNode = GridManager.Instance.GetNode(mouseWorldPosition);
+        PathNode hoveredNode = GridManager.Instance.PathfindLayer.GetNode(mouseWorldPosition);
         if (targetingSystem.IsSelectedNodeValid(hoveredNode))
         {
             targetingSystem.HighlightHover(mouseWorldPosition);
@@ -82,7 +86,7 @@ public class TargetSelectionState : BaseState
 
     private void MoveHover(Vector3 mouseWorldPosition)
     {
-        PathNode hoveredNode = GridManager.Instance.GetNode(mouseWorldPosition);
+        PathNode hoveredNode = GridManager.Instance.PathfindLayer.GetNode(mouseWorldPosition);
         if (
             hoveredNode == null
             || !hoveredNode.IsWalkable

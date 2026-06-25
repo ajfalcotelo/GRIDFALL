@@ -36,13 +36,11 @@ public class PathNode
     public int HCost { get; private set; }
     public int FCost => GCost + HCost;
     public bool IsWalkable { get; set; }
-    public IUnitRoot Occupant { get; set; }
 
     public PathNode(Vector2Int position)
     {
         Position = position;
         IsWalkable = true;
-        Occupant = null;
     }
 
     public void SetGCost(int value)
@@ -62,7 +60,7 @@ public class PathNode
 
         foreach (
             var dir in cardinalDirections
-                .Select(dir => GridManager.Instance.GetNode(Position + dir))
+                .Select(dir => GridManager.Instance.PathfindLayer.GetNode(Position + dir))
                 .Where(node => node != null)
         )
         {
@@ -71,7 +69,7 @@ public class PathNode
 
         foreach (
             var dir in diagonalDirections
-                .Select(dir => GridManager.Instance.GetNode(Position + dir))
+                .Select(dir => GridManager.Instance.PathfindLayer.GetNode(Position + dir))
                 .Where(node => node != null)
         )
         {

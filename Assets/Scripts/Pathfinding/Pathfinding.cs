@@ -7,8 +7,8 @@ public class Pathfinding
     // as of now, there are no exception handling for when clicking outside the tilemap bounds
     public static List<PathNode> FindPath(Vector2Int start, Vector2Int target)
     {
-        PathNode startNode = GridManager.Instance.GetNode(start);
-        PathNode targetNode = GridManager.Instance.GetNode(target);
+        PathNode startNode = GridManager.Instance.PathfindLayer.GetNode(start);
+        PathNode targetNode = GridManager.Instance.PathfindLayer.GetNode(target);
 
         var openList = new List<PathNode> { startNode };
         var closedList = new List<PathNode>();

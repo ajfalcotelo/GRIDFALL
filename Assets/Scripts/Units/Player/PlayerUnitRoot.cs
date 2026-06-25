@@ -13,7 +13,7 @@ public class PlayerUnitRoot : MonoBehaviour, IUnitRoot
     public IUnitController Controller { get; private set; }
     public SpriteRenderer SpriteRenderer { get; private set; }
 
-    public PathNode CurrentNode => GridManager.Instance.GetNode(transform.position);
+    public PathNode CurrentNode => GridManager.Instance.PathfindLayer.GetNode(transform.position);
     public GameObject GameObject => gameObject;
 
     void Awake()
