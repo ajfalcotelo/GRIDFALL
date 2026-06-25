@@ -48,13 +48,11 @@ public class PathNode
     public void SetGCost(int value)
     {
         GCost = value;
-        SetText();
     }
 
     public void SetHCost(int value)
     {
         HCost = value;
-        SetText();
     }
 
     public void ListNeighbors()
@@ -98,12 +96,5 @@ public class PathNode
         var horizontalMovesRequired = highest - lowest;
 
         return lowest * MOVE_DIAGONAL_COST + horizontalMovesRequired * MOVE_STRAIGHT_COST;
-    }
-
-    private void SetText()
-    {
-        GCostText = GCost.ToString();
-        HCostText = HCost.ToString();
-        FCostText = FCost.ToString();
     }
 }
