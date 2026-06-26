@@ -22,9 +22,7 @@ public class PerformDecisionState : BaseState
                 TargetUnit = GridManager.Instance.OccupancyLayer.GetNode(
                     unitController.SelectedTargetNode.Position
                 ),
-                TargetNode = GridManager.Instance.PathfindLayer.GetNode(
-                    unitController.SelectedTargetNode.Position
-                ),
+                TargetNode = unitController.SelectedTargetNode,
                 Path = unitController.SelectedPath,
             },
             new System.Action(() => ChangeState(unitController.DecisionState))

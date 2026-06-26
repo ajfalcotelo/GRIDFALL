@@ -38,14 +38,13 @@ public class Pathfinding
                     path.Add(currentPathNode);
                     currentPathNode = currentPathNode.Parent;
                 }
-                path.Add(startNode); // for debug, not needed for implementation
                 path.Reverse();
                 return path;
             }
 
             // Evaluate neighbor nodes
             foreach (
-                PathNode neighbor in current.AllNeighbors.Where(node =>
+                PathNode neighbor in current.Neighbors.Where(node =>
                     node.IsWalkable && !closedList.Contains(node)
                 )
             )

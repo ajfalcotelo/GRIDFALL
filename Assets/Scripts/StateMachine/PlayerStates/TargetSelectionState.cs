@@ -51,7 +51,8 @@ public class TargetSelectionState : BaseState
         ActionContext context = new()
         {
             Actor = unit,
-            TargetNode = GridManager.Instance.PathfindLayer.GetNode(selectedNode.Position),
+            TargetUnit = GridManager.Instance.OccupancyLayer.GetNode(selectedNode.Position),
+            TargetNode = selectedNode,
         };
 
         if (

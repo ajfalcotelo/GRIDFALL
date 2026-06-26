@@ -73,7 +73,7 @@ public class TargetingSystem : MonoBehaviour
             if (dist >= range)
                 continue;
 
-            foreach (PathNode neighbor in node.CardinalNeighbors)
+            foreach (PathNode neighbor in node.Neighbors)
             {
                 if (
                     neighbor.IsWalkable

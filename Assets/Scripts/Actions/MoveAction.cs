@@ -45,13 +45,6 @@ public class MoveAction : BaseAction
         }
 
         GridManager.Instance.OccupancyLayer.SetNode(targetPos, context.Actor);
-        context.Actor.MoveRange.DecrementMoveRange(GetDistance(sourcePos, targetPos));
-    }
-
-    private int GetDistance(Vector2Int a, Vector2Int b)
-    {
-        var dx = Mathf.Abs(a.x - b.x);
-        var dy = Mathf.Abs(a.y - b.y);
-        return dx + dy;
+        context.Actor.MoveRange.DecrementMoveRange(paths.Count);
     }
 }
