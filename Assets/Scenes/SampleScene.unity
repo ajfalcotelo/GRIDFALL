@@ -1751,7 +1751,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &699996654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1764,6 +1764,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf0472e24b567984989eb8c251a6b5cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TileDebug
+  debugMode: 0
+  showDebug: 0
+  groundTilemap: {fileID: 800099769}
 --- !u!4 &699996655
 Transform:
   m_ObjectHideFlags: 0
