@@ -15,5 +15,5 @@ MonoBehaviour:
   maxHealth: 100
   strength: 15
   defense: 1
-  speed: 3
+  speed: 2
   range: 1

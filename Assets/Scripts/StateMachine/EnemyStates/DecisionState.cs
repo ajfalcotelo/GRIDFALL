@@ -35,8 +35,7 @@ public class DecisionState : BaseState
                 targets.Add(node);
         }
 
-        var attackTarget =
-            targets.Count > 0 ? GetNearestNode(targets, unit.CurrentNode.Position) : null;
+        var attackTarget = targets.Count > 0 ? GetNearestNodeToPlayer(targets) : null;
         if (attackTarget != null && unit.Stats.ActionCount > 0)
         {
             unitController.SelectedTargetNode = attackTarget;
@@ -49,7 +48,8 @@ public class DecisionState : BaseState
             unit,
             unitController.MoveAction.GetTargetingData(unit)
         );
-        var moveTarget = GetNearestNode(nodes, player.CurrentNode.Position);
+        var moveTarget = GetNearestNodeToPlayer(nodes);
+
         if (moveTarget.Position != unit.CurrentNode.Position && unit.MoveRange.CurrentMoveRange > 0)
         {
             unitController.SelectedTargetNode = moveTarget;
@@ -67,28 +67,46 @@ public class DecisionState : BaseState
 
     public override void Exit() { }
 
-    private PathNode GetNearestNode(List<PathNode> nodes, Vector2Int target)
+    private PathNode GetNearestNodeToPlayer(List<PathNode> nodes)
     {
         PathNode nearest = nodes[0];
-        int minDist = GetDistance(nearest.Position, target);
+        int minDist = GetDistance(nearest.Position, player.CurrentNode.Position);
+        int minSteps = GetStepsToPlayer(nearest);
 
         foreach (var node in nodes)
         {
-            var dist = GetDistance(node.Position, target);
-            if (dist < minDist)
+            var steps = GetStepsToPlayer(node);
+
+            if (steps < minSteps)
             {
-                minDist = dist;
+                minSteps = steps;
+                minDist = GetDistance(nearest.Position, player.CurrentNode.Position);
                 nearest = node;
+            }
+            else if (steps == minSteps)
+            {
+                var dist = GetDistance(node.Position, player.CurrentNode.Position);
+                if (dist < minDist)
+                    nearest = node;
             }
         }
 
         return nearest;
     }
 
-    private int GetDistance(Vector2Int node, Vector2Int target)
+    private int GetDistance(Vector2Int a, Vector2Int b)
     {
-        var dx = Mathf.Abs(node.x - target.x);
-        var dy = Mathf.Abs(node.y - target.y);
-        return Mathf.Max(dx, dy);
+        var dx = Mathf.Abs(a.x - b.x);
+        var dy = Mathf.Abs(a.y - b.y);
+        return dx + dy;
+    }
+
+    private int GetStepsToPlayer(PathNode node)
+    {
+        List<PathNode> path = Pathfinding.FindPath(node.Position, player.CurrentNode.Position);
+        if (path == null)
+            return -1;
+
+        return path.Count;
     }
 }
