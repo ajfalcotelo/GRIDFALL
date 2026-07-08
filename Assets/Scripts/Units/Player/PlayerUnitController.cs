@@ -11,7 +11,7 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
     private InputController inputController;
 
     [SerializeField]
-    private TargetingSystem targetingSystem;
+    private NodeHighlighter nodeHighlighter;
 
     [SerializeField]
     private MovementPreviewSystem pathLineRenderer;
@@ -59,14 +59,14 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
             unit,
             this,
             inputController,
-            targetingSystem,
+            nodeHighlighter,
             pathLineRenderer
         );
         ActionExecutionState = new(StateMachine, unit, this, inputController);
         EndTurnState = new(StateMachine, unit, battleManager);
 
-        MoveAction = new();
-        AttackAction = new();
+        MoveAction = new(unit);
+        AttackAction = new(unit);
     }
 
     public void StartTurn()

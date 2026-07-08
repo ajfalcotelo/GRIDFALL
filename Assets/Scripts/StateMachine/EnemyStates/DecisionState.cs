@@ -4,32 +4,27 @@ using UnityEngine;
 public class DecisionState : BaseState
 {
     private readonly EnemyUnitController unitController;
-    private readonly TargetingSystem targetingSystem;
+
     private readonly PlayerUnitRoot player;
 
     public DecisionState(
         StateMachine stateMachine,
         IUnitRoot unit,
         EnemyUnitController unitController,
-        TargetingSystem targetingSystem,
         PlayerUnitRoot player
     )
         : base(stateMachine, unit)
     {
         this.unitController = unitController;
-        this.targetingSystem = targetingSystem;
         this.player = player;
     }
 
     public override void Enter()
     {
-        var nodes = targetingSystem.GetReachableNodes(
-            unit,
-            unitController.AttackAction.GetTargetingData(unit)
-        );
+        var attackNodes = unitController.AttackAction.GetReachableNodes();
 
         List<PathNode> targets = new();
-        foreach (var node in nodes)
+        foreach (var node in attackNodes)
         {
             if (GridManager.Instance.OccupancyLayer.GetNode(node.Position) != null)
                 targets.Add(node);
@@ -44,11 +39,8 @@ public class DecisionState : BaseState
             return;
         }
 
-        nodes = targetingSystem.GetReachableNodes(
-            unit,
-            unitController.MoveAction.GetTargetingData(unit)
-        );
-        var moveTarget = GetNearestNodeToPlayer(nodes);
+        var moveNodes = unitController.MoveAction.GetReachableNodes();
+        var moveTarget = GetNearestNodeToPlayer(moveNodes);
 
         if (moveTarget.Position != unit.CurrentNode.Position && unit.MoveRange.CurrentMoveRange > 0)
         {

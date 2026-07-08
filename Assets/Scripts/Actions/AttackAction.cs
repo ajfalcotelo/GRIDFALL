@@ -1,15 +1,36 @@
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class AttackAction : BaseAction
 {
+    public AttackAction(IUnitRoot unit)
+        : base(unit) { }
+
     public override bool CanRun(ActionContext context)
     {
         return context.TargetUnit != null;
     }
 
-    public override TargetingData GetTargetingData(IUnitRoot unit)
+    public override List<PathNode> GetReachableNodes()
     {
-        return new TargetingData(unit.Stats.Range, ActionType.Attack);
+        Vector2Int sourcePosition = actor.CurrentNode.Position;
+        List<PathNode> inRangeNodes = new();
+        var range = actor.Stats.Range;
+
+        for (int x = sourcePosition.x - range; x <= sourcePosition.x + range; x++)
+        {
+            for (int y = sourcePosition.y - range; y <= sourcePosition.y + range; y++)
+            {
+                var pos = new Vector2Int(x, y);
+                var node = GridManager.Instance.PathfindLayer.GetNode(pos);
+                if (node == null || sourcePosition == pos)
+                    continue;
+                inRangeNodes.Add(node);
+            }
+        }
+
+        return inRangeNodes;
     }
 
     protected override IEnumerator Execute(ActionContext context)

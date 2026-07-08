@@ -6,14 +6,47 @@ public class MoveAction : BaseAction
 {
     private readonly float moveSpeed = 5f;
 
+    public MoveAction(IUnitRoot unit)
+        : base(unit) { }
+
     public override bool CanRun(ActionContext context)
     {
         return context.TargetNode != null;
     }
 
-    public override TargetingData GetTargetingData(IUnitRoot unit)
+    public override List<PathNode> GetReachableNodes()
     {
-        return new TargetingData(unit.MoveRange.CurrentMoveRange, ActionType.Move);
+        Queue<(PathNode node, int dist)> queue = new();
+        HashSet<PathNode> visited = new();
+        List<PathNode> inRangeNodes = new();
+
+        queue.Enqueue((actor.CurrentNode, 0));
+        visited.Add(actor.CurrentNode);
+
+        while (queue.Count > 0)
+        {
+            var (node, dist) = queue.Dequeue();
+
+            inRangeNodes.Add(node);
+
+            if (dist >= actor.MoveRange.CurrentMoveRange)
+                continue;
+
+            foreach (PathNode neighbor in node.Neighbors)
+            {
+                if (
+                    neighbor.IsWalkable
+                    && !visited.Contains(neighbor)
+                    && GridManager.Instance.OccupancyLayer.GetNode(neighbor.Position) == null
+                )
+                {
+                    visited.Add(neighbor);
+                    queue.Enqueue((neighbor, dist + 1));
+                }
+            }
+        }
+
+        return inRangeNodes;
     }
 
     protected override IEnumerator Execute(ActionContext context)

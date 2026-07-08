@@ -4134,7 +4134,7 @@ GameObject:
   - component: {fileID: 973811977}
   - component: {fileID: 973811978}
   m_Layer: 0
-  m_Name: TargetingSystem
+  m_Name: NodeHighlighter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4585,7 +4585,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyUnitController
   battleManager: {fileID: 268151356}
-  targetingSystem: {fileID: 973811978}
   player: {fileID: 132355909}
 --- !u!114 &1284545664
 MonoBehaviour:

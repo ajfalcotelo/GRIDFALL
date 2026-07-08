@@ -1,10 +1,17 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class BaseAction
 {
     private Action OnActionFinished = delegate { };
+    protected IUnitRoot actor;
+
+    public BaseAction(IUnitRoot unit)
+    {
+        actor = unit;
+    }
 
     public Coroutine Run(MonoBehaviour owner, ActionContext context, Action onActionFinished)
     {
@@ -19,7 +26,7 @@ public abstract class BaseAction
         OnActionFinished.Invoke();
     }
 
-    public abstract TargetingData GetTargetingData(IUnitRoot unit);
+    public abstract List<PathNode> GetReachableNodes();
     public abstract bool CanRun(ActionContext context);
     protected abstract IEnumerator Execute(ActionContext context);
 }

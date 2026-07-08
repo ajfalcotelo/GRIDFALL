@@ -8,9 +8,6 @@ public class EnemyUnitController : MonoBehaviour, IUnitController
     private BattleManager battleManager;
 
     [SerializeField]
-    private TargetingSystem targetingSystem;
-
-    [SerializeField]
     private PlayerUnitRoot player;
 
     public BaseAction SelectedAction { get; set; }
@@ -46,12 +43,12 @@ public class EnemyUnitController : MonoBehaviour, IUnitController
     {
         stateMachine = new();
 
-        DecisionState = new(stateMachine, unit, this, targetingSystem, player);
+        DecisionState = new(stateMachine, unit, this, player);
         PerformDecisionState = new(stateMachine, unit, this);
         EndTurnState = new(stateMachine, unit, battleManager);
 
-        MoveAction = new();
-        AttackAction = new();
+        MoveAction = new(unit);
+        AttackAction = new(unit);
     }
 
     public void StartTurn()

@@ -5,7 +5,7 @@ public class TargetSelectionState : BaseState
 {
     private readonly PlayerUnitController unitController;
     private readonly InputController inputController;
-    private readonly TargetingSystem targetingSystem;
+    private readonly NodeHighlighter nodeHighlighter;
     private readonly MovementPreviewSystem movementPreviewSystem;
     private List<PathNode> plannedPath;
     private PathNode prevHoverNode;
@@ -16,14 +16,14 @@ public class TargetSelectionState : BaseState
         IUnitRoot unit,
         PlayerUnitController unitController,
         InputController inputController,
-        TargetingSystem targetingSystem,
+        NodeHighlighter nodeHighlighter,
         MovementPreviewSystem movementPreviewSystem
     )
         : base(stateMachine, unit)
     {
         this.unitController = unitController;
         this.inputController = inputController;
-        this.targetingSystem = targetingSystem;
+        this.nodeHighlighter = nodeHighlighter;
         this.movementPreviewSystem = movementPreviewSystem;
     }
 
@@ -33,8 +33,7 @@ public class TargetSelectionState : BaseState
         inputController.Click += OnClick;
         inputController.Hover += OnHover;
         inputController.Cancel += OnCancelSelection;
-        TargetingData targetData = unitController.SelectedAction.GetTargetingData(unit);
-        targetingSystem.HighlightSelectableNodes(unit, targetData);
+        nodeHighlighter.HighlightNodes(unitController.SelectedAction.GetReachableNodes());
     }
 
     public override void Exit()
@@ -48,6 +47,7 @@ public class TargetSelectionState : BaseState
     private void OnClick(Vector3 mousePos)
     {
         PathNode selectedNode = GridManager.Instance.PathfindLayer.GetNode(mousePos);
+
         ActionContext context = new()
         {
             Actor = unit,
@@ -55,13 +55,10 @@ public class TargetSelectionState : BaseState
             TargetNode = selectedNode,
         };
 
-        if (
-            !targetingSystem.IsSelectedNodeValid(selectedNode)
-            || !unitController.SelectedAction.CanRun(context)
-        )
+        if (!unitController.SelectedAction.CanRun(context) || !IsNodeValid(selectedNode))
             return;
 
-        targetingSystem.ClearSetTiles();
+        nodeHighlighter.ClearSetTiles();
         movementPreviewSystem.Clear();
         unitController.SelectedTargetNode = selectedNode;
         unitController.SelectedPath = plannedPath;
@@ -79,23 +76,23 @@ public class TargetSelectionState : BaseState
         }
 
         PathNode hoveredNode = GridManager.Instance.PathfindLayer.GetNode(mouseWorldPosition);
-        if (targetingSystem.IsSelectedNodeValid(hoveredNode))
+        if (IsNodeValid(hoveredNode))
         {
-            targetingSystem.HighlightHover(mouseWorldPosition);
+            nodeHighlighter.HighlightHover(mouseWorldPosition);
+        }
+        else
+        {
+            nodeHighlighter.ClearHover();
         }
     }
 
     private void MoveHover(Vector3 mouseWorldPosition)
     {
         PathNode hoveredNode = GridManager.Instance.PathfindLayer.GetNode(mouseWorldPosition);
-        if (
-            hoveredNode == null
-            || !hoveredNode.IsWalkable
-            || !targetingSystem.IsSelectedNodeValid(hoveredNode)
-        )
+        if (hoveredNode == null || !hoveredNode.IsWalkable || !IsNodeValid(hoveredNode))
         {
             movementPreviewSystem.Clear();
-            targetingSystem.ClearHover();
+            nodeHighlighter.ClearHover();
             prevHoverNode = null;
             hasHovered = false;
             return;
@@ -115,17 +112,23 @@ public class TargetSelectionState : BaseState
         }
     }
 
+    private bool IsNodeValid(PathNode selectedNode)
+    {
+        var reachableNodes = unitController.SelectedAction.GetReachableNodes();
+        return reachableNodes.Exists(node => node == selectedNode);
+    }
+
     private void PreviewMove(Vector3 mouseWorldPosition, PathNode hoveredNode)
     {
         List<PathNode> path = Pathfinding.FindPath(unit.CurrentNode.Position, hoveredNode.Position);
         movementPreviewSystem.RenderPreview(unit, path);
-        targetingSystem.HighlightHover(mouseWorldPosition);
+        nodeHighlighter.HighlightHover(mouseWorldPosition);
         plannedPath = path;
     }
 
     private void OnCancelSelection()
     {
         ChangeState(unitController.ActionSelectionState);
-        targetingSystem.ClearSetTiles();
+        nodeHighlighter.ClearSetTiles();
     }
 }
