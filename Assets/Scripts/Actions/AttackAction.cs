@@ -12,6 +12,17 @@ public class AttackAction : BaseAction
         return context.TargetUnit != null;
     }
 
+    public override float Score(ActionContext context)
+    {
+        if (context.TargetUnit == null)
+            return 0;
+
+        if (actor.Stats.ActionCount > 0)
+            return 2f;
+
+        return 0;
+    }
+
     public override List<PathNode> GetReachableNodes()
     {
         Vector2Int sourcePosition = actor.CurrentNode.Position;

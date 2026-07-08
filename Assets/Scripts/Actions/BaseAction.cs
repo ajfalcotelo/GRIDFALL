@@ -27,6 +27,7 @@ public abstract class BaseAction
     }
 
     public abstract List<PathNode> GetReachableNodes();
+    public abstract float Score(ActionContext context);
     public abstract bool CanRun(ActionContext context);
     protected abstract IEnumerator Execute(ActionContext context);
 }

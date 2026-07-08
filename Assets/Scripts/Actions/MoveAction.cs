@@ -14,6 +14,14 @@ public class MoveAction : BaseAction
         return context.TargetNode != null;
     }
 
+    public override float Score(ActionContext context)
+    {
+        if (actor.MoveRange.CurrentMoveRange > 0)
+            return 1f;
+
+        return 0;
+    }
+
     public override List<PathNode> GetReachableNodes()
     {
         Queue<(PathNode node, int dist)> queue = new();
