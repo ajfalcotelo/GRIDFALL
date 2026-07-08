@@ -35,8 +35,8 @@ public class AttackAction : BaseAction
 
     protected override IEnumerator Execute(ActionContext context)
     {
-        context.Actor.Stats.DecrementActionCount();
-        context.TargetUnit.Health.TakeDamage(context.Actor.Stats.Strength);
+        actor.Stats.DecrementActionCount();
+        context.TargetUnit.Health.TakeDamage(actor.Stats.Strength);
         yield break;
     }
 }

@@ -453,7 +453,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUnitController
   actionMenu: {fileID: 313370137}
   inputController: {fileID: 1832497468}
-  targetingSystem: {fileID: 973811978}
+  nodeHighlighter: {fileID: 973811978}
   pathLineRenderer: {fileID: 2005333645}
   battleManager: {fileID: 268151356}
 --- !u!114 &132355911
@@ -4171,7 +4171,6 @@ MonoBehaviour:
   hoverTile: {fileID: 11400000, guid: c00be674b20cbef4b929fada124d4e75, type: 2}
   highlightTilemap: {fileID: 266918976}
   highlightRuleTile: {fileID: 11400000, guid: 1195487f29cea924595f3363771b906b, type: 2}
-  obstacleTilemap: {fileID: 454325941}
 --- !u!1 &1039600950
 GameObject:
   m_ObjectHideFlags: 0

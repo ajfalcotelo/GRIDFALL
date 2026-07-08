@@ -18,7 +18,6 @@ public class PerformDecisionState : BaseState
             unitController,
             new ActionContext()
             {
-                Actor = unit,
                 TargetUnit = GridManager.Instance.OccupancyLayer.GetNode(
                     unitController.SelectedTargetNode.Position
                 ),

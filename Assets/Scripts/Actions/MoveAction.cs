@@ -51,7 +51,7 @@ public class MoveAction : BaseAction
 
     protected override IEnumerator Execute(ActionContext context)
     {
-        var sourcePos = context.Actor.CurrentNode.Position;
+        var sourcePos = actor.CurrentNode.Position;
         var targetPos = context.TargetNode.Position;
         List<PathNode> paths = context.Path;
         if (paths == null)
@@ -62,13 +62,13 @@ public class MoveAction : BaseAction
         {
             while (
                 Vector2.Distance(
-                    context.Actor.GameObject.transform.position,
+                    actor.GameObject.transform.position,
                     GridManager.Instance.NodeToWorld(path.Position) + Vector2.one * 0.5f
                 ) > 0.05f
             )
             {
-                context.Actor.GameObject.transform.position = Vector2.MoveTowards(
-                    context.Actor.GameObject.transform.position,
+                actor.GameObject.transform.position = Vector2.MoveTowards(
+                    actor.GameObject.transform.position,
                     GridManager.Instance.NodeToWorld(path.Position) + Vector2.one * 0.5f,
                     moveSpeed * Time.deltaTime
                 );
@@ -77,7 +77,7 @@ public class MoveAction : BaseAction
             }
         }
 
-        GridManager.Instance.OccupancyLayer.SetNode(targetPos, context.Actor);
-        context.Actor.MoveRange.DecrementMoveRange(paths.Count);
+        GridManager.Instance.OccupancyLayer.SetNode(targetPos, actor);
+        actor.MoveRange.DecrementMoveRange(paths.Count);
     }
 }
