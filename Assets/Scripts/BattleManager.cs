@@ -42,6 +42,7 @@ public class BattleManager : MonoBehaviour
     private void StartUnitTurn()
     {
         currentUnit = initiative[currentTurnIndex];
+        currentUnit.StatusEffects.TickTurnStart();
         currentUnit.Controller.StartTurn();
     }
 }

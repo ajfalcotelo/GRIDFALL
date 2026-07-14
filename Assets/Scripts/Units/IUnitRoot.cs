@@ -6,6 +6,7 @@ public interface IUnitRoot
     MoveRange MoveRange { get; }
     UnitStats Stats { get; }
     IUnitController Controller { get; }
+    StatusEffectController StatusEffects { get; }
     PathNode CurrentNode { get; }
     GameObject GameObject { get; }
     SpriteRenderer SpriteRenderer { get; }

@@ -19,6 +19,9 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
     [SerializeField]
     private BattleManager battleManager;
 
+    [SerializeField]
+    private StatusEffectDefinition test; //testing
+
     public PathNode SelectedTargetNode { get; set; }
     public BaseAction SelectedAction { get; set; }
     public List<PathNode> SelectedPath { get; set; }
@@ -47,6 +50,8 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
             Vector3Int.RoundToInt(transform.position)
         );
         GridManager.Instance.OccupancyLayer.SetNode(transform.position, unit);
+
+        unit.StatusEffects.ApplyEffect(test); //test
     }
 
     private void SetupStateMachine()

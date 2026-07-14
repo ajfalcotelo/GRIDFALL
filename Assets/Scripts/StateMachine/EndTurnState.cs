@@ -12,6 +12,7 @@ public class EndTurnState : BaseState
     {
         unit.MoveRange.ResetMoveRange();
         unit.Stats.ResetActionCount();
+        unit.StatusEffects.TickTurnEnd();
         battleManager.NextUnitTurn();
     }
 
