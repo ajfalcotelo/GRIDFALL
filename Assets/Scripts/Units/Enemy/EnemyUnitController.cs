@@ -55,4 +55,6 @@ public class EnemyUnitController : MonoBehaviour, IUnitController
     {
         stateMachine.SetState(DecisionState);
     }
+
+    public void UseAbility() { }
 }

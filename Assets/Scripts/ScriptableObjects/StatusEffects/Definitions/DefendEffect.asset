@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 54d5befc674619241997b7b7be1472b9, type: 3}
-  m_Name: Defend
+  m_Name: DefendEffect
   m_EditorClassIdentifier: Assembly-CSharp::ScriptableStatusEffect
-  effectId: 
-  displayName: 
+  effectId: defend
+  displayName: Defend
   icon: {fileID: 0}
-  baseDuration: 0
-  behavior: {fileID: 0}
+  baseDuration: 2
+  behavior: {fileID: 11400000, guid: 80ad45dcccec695468e5314dd64cc213, type: 2}

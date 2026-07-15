@@ -20,7 +20,7 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
     private BattleManager battleManager;
 
     [SerializeField]
-    private StatusEffectDefinition test; //testing
+    private AbilityDefinition test; //testing
 
     public PathNode SelectedTargetNode { get; set; }
     public BaseAction SelectedAction { get; set; }
@@ -33,6 +33,7 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
 
     public MoveAction MoveAction { get; private set; }
     public AttackAction AttackAction { get; private set; }
+    public DefendAction DefendAction { get; private set; }
 
     public StateMachine StateMachine { get; private set; }
 
@@ -50,8 +51,6 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
             Vector3Int.RoundToInt(transform.position)
         );
         GridManager.Instance.OccupancyLayer.SetNode(transform.position, unit);
-
-        unit.StatusEffects.ApplyEffect(test); //test
     }
 
     private void SetupStateMachine()
@@ -72,10 +71,19 @@ public class PlayerUnitController : MonoBehaviour, IUnitController
 
         MoveAction = new(unit);
         AttackAction = new(unit);
+        DefendAction = new(unit);
     }
 
     public void StartTurn()
     {
         StateMachine.SetState(ActionSelectionState);
+    }
+
+    public void UseAbility()
+    {
+        foreach (var application in test.effectsToApply)
+        {
+            unit.StatusEffects.ApplyEffect(application.effect);
+        }
     }
 }

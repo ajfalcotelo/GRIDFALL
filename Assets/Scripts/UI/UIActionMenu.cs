@@ -13,9 +13,6 @@ public class UIActionMenu : MonoBehaviour
     [SerializeField]
     private Button attackButton;
 
-    [SerializeField]
-    private Button endTurnButton;
-
     public event Action ButtonPressed = delegate { };
 
     public void SetActionMenuActive()
@@ -41,6 +38,13 @@ public class UIActionMenu : MonoBehaviour
     public void OnAttackButtonPressed()
     {
         unitController.SelectedAction = unitController.AttackAction;
+        ButtonPressed.Invoke();
+        gameObject.SetActive(false);
+    }
+
+    public void OnDefendButtonPressed()
+    {
+        unitController.SelectedAction = unitController.DefendAction;
         ButtonPressed.Invoke();
         gameObject.SetActive(false);
     }
